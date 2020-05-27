@@ -4,7 +4,7 @@
 '''
 * Project Name : ply
 * File Name    : testply.py
-* Description  : 
+* Description  : 发现新大陆, PLY真香啊
 * Create Time  : 2020-05-28 00:27:11
 * Version      : 1.0
 * Author       : Steve X

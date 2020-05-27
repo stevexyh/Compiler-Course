@@ -4,7 +4,7 @@
 '''
 * Project Name : Compiler-Course
 * File Name    : lexical.py
-* Description  : 
+* Description  : Lexer for the project
 * Create Time  : 2020-05-28 02:07:25
 * Version      : 1.0
 * Author       : Steve X
