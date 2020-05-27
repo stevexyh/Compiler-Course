@@ -1,3 +1,9 @@
-[submodule "c4"]
-	path = .testfolder/c4
+[submodule ".test_other/c4"]
+	path = .test_other/c4
 	url = https://github.com/rswier/c4.git
+[submodule ".test_other/pascompiler"]
+	path = .test_other/pascompiler
+	url = https://github.com/emilytrabert/pascompiler.git
+[submodule ".test_other/pascal.py"]
+	path = .test_other/pascal.py
+	url = https://github.com/brianwu02/pascal.py.git
