@@ -51,6 +51,8 @@ def t_NUMBER(t):
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+    # print(f'\nLine {t.lexer.lineno}')
+    print('-'*50)
 
 
 # A string containing ignored characters (spaces and tabs)
@@ -59,7 +61,7 @@ t_ignore = ' \t'
 
 # Error handling rule
 def t_error(t):
-    print(t.lineno, "Illegal TOKEN '%s'" % t.value[0])
+    print(t.lineno, f"INVALID TOKEN '{t.value[0]}' at {t.lexpos}")
     t.lexer.skip(1)
 
 
@@ -67,11 +69,9 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''3 + 4 * 10 + -20 *2
-1+1=2
-+-*/
-()
-xx
+data = '''
+mmm
+0123
 '''
 
 # Give the lexer some input
@@ -79,5 +79,6 @@ lexer.input(data)
 # Tokenize
 for tok in lexer:
     print(tok.lineno, tok.type, tok.value, tok.lexpos)
+print('#EOF')
 
-print(dir(tok))
+print(dir(lex))

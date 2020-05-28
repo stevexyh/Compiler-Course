@@ -1,0 +1,25 @@
+词法分析的Token(终结符):
+GE    	大于等于 >=
+LE    	小于等于 <=
+NE    	不等于 <>
+
+IntNo  	无符号整数 
+RealNo 	无符号实数 含科学计数法
+Iden   	标识符 以字母或下划线开头，后面紧跟字母或数字或下划线的字符串
+
+AssignOper 	:=
+Program 	关键字 program
+Var     	关键字 var
+Begin   	关键字 begin
+End     	关键字 end
+While   	关键字 while
+If      	关键字 if
+Then    	关键字 then
+Else    	关键字 else
+And     	关键字 and 逻辑与
+Not     	关键字 not 逻辑非
+Or      	关键字 or  逻辑或
+Integer 	关键字 integer 整数类型
+Real    	关键字 reald 实数类型
+
+还有文法中的分隔符、算符等字符关键字
