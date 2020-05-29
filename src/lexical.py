@@ -10,8 +10,10 @@
 * Author       : Steve X
 * GitHub       : https://github.com/Steve-Xyh
 '''
+# TODO 对每行进行整理, 比如同一行的token加入一个list
 
 import ply.lex as lex
+import format_string as fs
 
 '''
     词法分析的Token(终结符):
@@ -40,6 +42,7 @@ import ply.lex as lex
 
     还有文法中的分隔符、算符等字符关键字
 '''
+INPUT_FILE = './input.pas'
 
 reserved = {
     'program': 'Program',
@@ -77,32 +80,41 @@ t_AssignOper = r':='
 
 # A regular expression rule with some action code
 def t_Iden(t):
-    r'( |\t|^|$)+([a-zA-Z]|_)\w*( |\t|^|$)+'
+    r'\b[a-zA-Z_][0-9a-zA-Z_]*\b[^\.]'
+    if t.value.endswith('\n'):
+        t_newline(t)
 
     # Check for reserved words
+    t.value = t.value.strip()
     t.type = reserved.get(t.value, 'Iden')
     return t
 
 
 def t_RealNo(t):
-    r'( |\t|^|$)+\d*\.\d+( |\t|^|$)+'
+    r'\b(\d*\.\d+|\d+(\.\d+)?([Ee][+-]?\d+))\b[^\.]'
+
+    if t.value.endswith('\n'):
+        t_newline(t)
+
+    # print(f'\\{t.value}\\')
     t.value = float(t.value)
     return t
 
 
 def t_IntNo(t):
-    r'( |\t|^|$)+\d+( |\t|^|$)+'
+    r'\b[0-9]+\b[^\.]'
+
+    if t.value.endswith('\n'):
+        t_newline(t)
+
     t.value = int(t.value)
     return t
 
 
-
 # Define a rule so we can track line numbers
 def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
-    # print(f'\nLine {t.lexer.lineno}')
-    print('-'*50)
+    r'\n'
+    t.lexer.lineno += 1
 
 
 # A string containing ignored characters (spaces and tabs)
@@ -112,37 +124,20 @@ t_ignore = ' \t'
 # Error handling rule
 def t_error(t):
     err_token = t.value.split()[0]
-    # print('*'*10 + str(err_token) + '*'*10)
-    print(t.lineno, f"INVALID TOKEN '{err_token}' at {t.lexpos}")
+    print(f'\\{err_token}\\')
+    fs.err_en({
+        (str(t.lineno) + f" INVALID TOKEN "): f"'{err_token}'"
+    })
     t.lexer.skip(len(err_token))
 
 
 # Build the lexer
 lexer = lex.lex()
 
-# Test it out
-data = '''var myVar := 1
-xyz
-123
-0123
-0.123   .123    +.123   -.123   +0234.123   -0213.123   123.456
-aaaa
-0abc := 1
-_abc := 2
-@abc
-123
-1e3 1E3
+with open(INPUT_FILE) as f:
+    data = f.read()
+    lexer.input(data)
 
->= <= <>
-and or if else while
-abc.123
-1.5E3
-1e-3    1ee3
-'''
-
-# Give the lexer some input
-lexer.input(data)
-# Tokenize
 for tok in lexer:
     print(tok.lineno, tok.type, tok.value)
 print('#EOF')
