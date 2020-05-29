@@ -1,5 +1,6 @@
 # Compiler-Course
 Compiler lab project and demo
+A minipascal parser implemented with Python-PLY
 
 ## Files
 ```
@@ -24,4 +25,4 @@ Compiler lab project and demo
 
 
 ---
-by `Steve X`
+**by [Steve X](https://github.com/Steve-Xyh)**

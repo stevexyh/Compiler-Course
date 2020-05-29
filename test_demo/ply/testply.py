@@ -62,6 +62,7 @@ t_ignore = ' \t'
 # Error handling rule
 def t_error(t):
     print(t.lineno, f"INVALID TOKEN '{t.value[0]}' at {t.lexpos}")
+    print(t.lexer.lexdata)
     t.lexer.skip(1)
 
 
@@ -70,6 +71,7 @@ lexer = lex.lex()
 
 # Test it out
 data = '''
+123
 mmm
 0123
 '''
@@ -81,4 +83,4 @@ for tok in lexer:
     print(tok.lineno, tok.type, tok.value, tok.lexpos)
 print('#EOF')
 
-print(dir(lex))
+print(dir(tok.lexer))
