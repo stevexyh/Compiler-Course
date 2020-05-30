@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
+---------------------------------------------
 * Project Name : Compiler-Course
 * File Name    : lexical.py
 * Description  : Lexer for the project
@@ -9,33 +10,38 @@
 * Version      : 1.0
 * Author       : Steve X
 * GitHub       : https://github.com/Steve-Xyh
+---------------------------------------------
+* Notice
 
---词法分析的Token(终结符):
-* GE            大于等于 >=
-* LE            小于等于 <=
-* NE            不等符号 <>
-* AssignOper    赋值符号 :=
+- 词法分析的Token(终结符):
+    * GE            大于等于 >=
+    * LE            小于等于 <=
+    * NE            不等符号 <>
+    * AssignOper    赋值符号 :=
 
-* IntNo         无符号整数
-* RealNo        无符号实数 含科学计数法
-* Iden          标识符 以字母或下划线开头，后面紧跟字母或数字或下划线的字符串
+    * IntNo         无符号整数
+    * RealNo        无符号实数      含科学计数法
+    * Iden          变量标识符      以字母或下划线开头，后面紧跟字母或数字或下划线的字符串
 
-* Program       关键字 program
-* Var           关键字 var
-* Begin         关键字 begin
-* End           关键字 end
-* While         关键字 while
-* If            关键字 if
-* Then          关键字 then
-* Else          关键字 else
-* And           关键字 and      逻辑与
-* Not           关键字 not      逻辑非
-* Or            关键字 or       逻辑或
-* Integer       关键字 integer  整数类型
-* Real          关键字 reald    实数类型
+    * Program       关键字 program
+    * Var           关键字 var
+    * Begin         关键字 begin
+    * End           关键字 end
+    * While         关键字 while
+    * If            关键字 if
+    * Then          关键字 then
+    * Else          关键字 else
+    * And           关键字 and      逻辑与
+    * Not           关键字 not      逻辑非
+    * Or            关键字 or       逻辑或
+    * Integer       关键字 integer  整数类型
+    * Real          关键字 reald    实数类型
 
---还有文法中的分隔符、算符等字符关键字
+- 还有文法中的分隔符、算符等字符关键字
+---------------------------------------------
 '''
+# TODO(Steve X): 识别文法中的分隔符、算符等字符关键字
+
 
 import ply.lex as lex
 import format_string as fs
@@ -59,6 +65,7 @@ reserved = {
     'integer': 'Integer',
     'reald': 'Real',
 }
+
 
 # List of token names.   This is always required
 tokens = [
@@ -98,7 +105,6 @@ def t_Iden(t):
 
 def t_RealNo(t):
     r'\b(\d*\.\d+|\d+(\.\d+)?([Ee][+-]?\d+))\b[^\.]'
-
     if t.value.endswith('\n'):
         t_newline(t)
 
@@ -108,7 +114,6 @@ def t_RealNo(t):
 
 def t_IntNo(t):
     r'\b[0-9]+\b[^\.]'
-
     if t.value.endswith('\n'):
         t_newline(t)
 
@@ -130,10 +135,10 @@ def t_error(t):
         t:LexToken - a token instance
     '''
     err_token = t.value.split()[0]
-    # print('-'*TABLE_LEN)
     column = find_column(input_str=INPUT_DATA, token=t)
     err_line = INPUT_DATA.splitlines()[t.lineno - 1]
 
+    # Locate and mark the error
     fs.err_en({
         (' ' + str(t.lineno) + f' File "{INPUT_FILE}", line {t.lineno},col {column} '.ljust(35)): f" INVALID TOKEN '{err_token}'"
     })
@@ -141,6 +146,7 @@ def t_error(t):
     print(' '*(column - 1) + '='*len(err_token))
     print(' '*(column - 1) + '↑')
     print('-'*TABLE_LEN)
+
     t.lexer.skip(len(err_token))
 #--------------------------------------------END---------------------------------------------#
 
