@@ -4,23 +4,31 @@ A minipascal parser implemented with Python-PLY
   
 ## Files  
 ```  
-.  
-├── README.md  
-├── src  
-└── test_demo  
-    ├── flex_bison  
-    │   ├── a.out  
-    │   ├── lex.yy.c  
-    │   └── verb.l  
-    └── ply  
-        └── testply.py  
+.
+├── README.md
+├── def
+│   ├── grammar_def.txt
+│   └── lexical_def.txt
+├── input_pascal
+│   └── input.pas
+├── src
+│   ├── README.md
+│   ├── format_string.py
+│   └── lexical.py
+└── test_demo
+
+8 directories, 15 files
 ```  
-  
+
+## Environment
+- `Python 3`
+- `Linux / macOS`
+
 ## Usage  
 - `To be finished.`  
   
 ## Installation  
-- `To be finished.`  
+- `pip install -r requirements.txt`  
   
   
   
