@@ -79,6 +79,7 @@ mmm
 # Give the lexer some input
 lexer.input(data)
 # Tokenize
+
 for tok in lexer:
     print(tok.lineno, tok.type, tok.value, tok.lexpos)
 print('#EOF')

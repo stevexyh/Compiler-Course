@@ -40,7 +40,7 @@
 import ply.lex as lex
 import format_string as fs
 
-INPUT_FILE = 'src/input.pas'
+INPUT_FILE = 'input_pascal/input.pas'
 
 
 #---------------------------------Preset vars for PLY module---------------------------------#
@@ -122,7 +122,6 @@ def t_newline(t):
     t.lexer.lineno += 1
 
 
-# TODO(Steve X): 美化出错代码定位
 def t_error(t):
     '''
     Error handling rule
@@ -131,11 +130,17 @@ def t_error(t):
         t:LexToken - a token instance
     '''
     err_token = t.value.split()[0]
-    print(f'\\{err_token}\\')
+    # print('-'*TABLE_LEN)
     column = find_column(input_str=INPUT_DATA, token=t)
+    err_line = INPUT_DATA.splitlines()[t.lineno - 1]
+
     fs.err_en({
-        (str(t.lineno) + f" INVALID TOKEN at line {t.lineno},col {column}".ljust(35)): f"'{err_token}'"
+        (' ' + str(t.lineno) + f' File "{INPUT_FILE}", line {t.lineno},col {column} '.ljust(35)): f" INVALID TOKEN '{err_token}'"
     })
+    print(err_line)
+    print(' '*(column - 1) + '='*len(err_token))
+    print(' '*(column - 1) + '↑')
+    print('-'*TABLE_LEN)
     t.lexer.skip(len(err_token))
 #--------------------------------------------END---------------------------------------------#
 
@@ -155,28 +160,6 @@ def find_column(input_str: str, token: lex.LexToken):
     return column
 
 
-# TODO(Steve X): 对每行进行整理, 比如同一行的token加入一个list
-def build_lines(lexer: lex.Lexer):
-    '''
-    Classify tokens by line number
-
-    Parameters::
-        lexer: Lexer - the lexer instance
-    Returns::
-        lines: list - a sorted list of tokens
-    '''
-    lines = []
-    line_no = 0
-    for tok in lexer:
-        if tok.lineno == line_no:
-            # lines[line_no].append((tok.lineno, tok.type, tok.value))
-            pass
-        else:
-            pass
-
-    return lines
-
-
 def read_data(file_name: str = INPUT_FILE):
     '''
     Read data from input Pascal file
@@ -193,22 +176,43 @@ def read_data(file_name: str = INPUT_FILE):
     return data
 
 
-def run_test(data: str = ''):
+def buile_lines(data: str = ''):
     '''
     Input pascal file and run test
+    Classify valid tokens by line number
 
     Parameters::
         data: str - the input string
+    Returns::
+        lines: list - a sorted list of tokens
     '''
     # Build the lexer
     lexer = lex.lex()
     lexer.input(data)
 
+    line_no = 0
+    lines = [[{'line_num': line_no}]]
     for tok in lexer:
+        while True:
+            if tok.lineno == line_no:
+                lines[line_no].append(tok)
+                break
+            else:
+                line_no += 1
+                lines.append([])
+                lines[0][0]['line_num'] = line_no
+
         print(tok.lineno, tok.type, tok.value)
+
     print('#EOF')
+    return lines
 
 
 if __name__ == "__main__":
-    INPUT_DATA = read_data(file_name=INPUT_FILE.split('/')[-1])
-    run_test(data=INPUT_DATA)
+    TABLE_LEN = 80
+    INPUT_DATA = read_data(file_name='../' + INPUT_FILE)
+    LINE_LIST = []
+    LINE_LIST = buile_lines(data=INPUT_DATA)
+    for l in LINE_LIST:
+        print(l)
+    print(LINE_LIST[0][0]['line_num'])
