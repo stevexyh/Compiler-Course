@@ -18,8 +18,8 @@
 '''
 
 
+# TODO(Steve X): 识别文法中的分隔符、算符等字符关键字(应该是yacc部分)
 # TODO(Steve X): 识别 MiniPascal 语法要求
-# TODO(Steve X): 输出符号表
 # TODO(Steve X): 输出程序的四元式
 # TODO(Steve X): 输出抽象语法树, 通过 Graphviz 显示
 # TODO(Steve X): 简单的错误诊断(所在行, 变量不存在, 重复定义等)

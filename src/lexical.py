@@ -27,6 +27,7 @@
     * Var           关键字 var
     * Begin         关键字 begin
     * End           关键字 end
+    * Do            关键字 do
     * While         关键字 while
     * If            关键字 if
     * Then          关键字 then
@@ -40,11 +41,12 @@
 - 还有文法中的分隔符、算符等字符关键字
 ---------------------------------------------
 '''
-# TODO(Steve X): 识别文法中的分隔符、算符等字符关键字
+# TODO(Steve X): 识别小数 `.123` 的形式
 
 
 import ply.lex as lex
 import format_string as fs
+from gen_table import print_table
 
 INPUT_FILE = 'input_pascal/input.pas'
 
@@ -55,6 +57,7 @@ reserved = {
     'var': 'Var',
     'begin': 'Begin',
     'end': 'End',
+    'do': 'Do',
     'while': 'While',
     'if': 'If',
     'then': 'Then',
@@ -137,7 +140,8 @@ def t_error(t):
     err_token = t.value.split()[0]
     column = find_column(input_str=INPUT_DATA, token=t)
     err_line = INPUT_DATA.splitlines()[t.lineno - 1]
-
+    print('***')
+    print(err_token)
     # Locate and mark the error
     fs.err_en({
         (' ' + str(t.lineno) + f' File "{INPUT_FILE}", line {t.lineno},col {column} '.ljust(35)): f" INVALID TOKEN '{err_token}'"
@@ -176,7 +180,7 @@ def read_data(file_name: str = INPUT_FILE):
         data: str - data read from the file
     '''
     data = ''
-    with open(file_name) as input_file:
+    with open(file=file_name, mode='r') as input_file:
         data = input_file.read()
 
     return data
@@ -214,11 +218,31 @@ def buile_lines(data: str = ''):
     return lines
 
 
+def run_lexical():
+    pass
+
+
+# TODO(Steve X): 给符号表添加col
 if __name__ == "__main__":
     TABLE_LEN = 80
     INPUT_DATA = read_data(file_name='../' + INPUT_FILE)
     LINE_LIST = []
     LINE_LIST = buile_lines(data=INPUT_DATA)
-    for l in LINE_LIST:
-        print(l)
-    print(LINE_LIST[0][0]['line_num'])
+    # for l in LINE_LIST:
+    #     print(l)
+    # print(LINE_LIST[0][0]['line_num'])
+
+    header = [
+        {'header': 'Ln', 'justify': 'right', 'style': 'green'},
+        # {'header': 'Col', 'justify': 'right', 'style': 'green'},
+        {'header': 'Type', 'justify': 'left', 'style': 'cyan'},
+        {'header': 'Value', 'justify': 'left', 'style': 'red'},
+    ]
+
+    data = []
+    for row in LINE_LIST[1:]:
+        for tok in row:
+            data.append((str(tok.lineno), tok.type, str(tok.value)))
+
+    print(data)
+    print_table(header_list=header, data_list=data)

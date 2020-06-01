@@ -12,6 +12,7 @@ Program 	关键字 program
 Var     	关键字 var
 Begin   	关键字 begin
 End     	关键字 end
+Do   		关键字 do
 While   	关键字 while
 If      	关键字 if
 Then    	关键字 then
