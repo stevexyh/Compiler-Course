@@ -10,7 +10,7 @@
 * Author       : Steve X
 * GitHub       : https://github.com/Steve-Xyh
 '''
-# TODO(Steve X): 将此格式化脚本加入Python-Tools项目, 避免重复造轮子
+
 
 import datetime
 import colorama
@@ -18,7 +18,7 @@ import colorama
 colorama.init(autoreset=True)
 
 
-def format_en(dic):
+def format_dict_en(dic):
     '''
     格式化英文key多行dict
 
@@ -38,7 +38,7 @@ def format_en(dic):
     return res
 
 
-def foemat_cn(dic: dict):
+def format_dict_cn(dic: dict):
     '''
     格式化中文key多行dict
 
@@ -61,7 +61,7 @@ def foemat_cn(dic: dict):
 
 def log_line_cn(dic: dict):
     '''
-    中文单行log
+    中文key单行log
 
     Parameters::
         dic: dict - log dict(e.g. {name: value})
@@ -81,7 +81,7 @@ def log_line_cn(dic: dict):
 
 def log_line_en(dic: dict):
     '''
-    英文单行log
+    英文key单行log
 
     Parameters::
         dic: dict - log dict(e.g. {name: value})
@@ -101,7 +101,7 @@ def log_line_en(dic: dict):
 
 def log_cn(dic: dict):
     '''
-    中文多行log
+    中文key多行log
 
     Parameters::
         dic: dict - log dict(e.g. {name: value})
@@ -126,7 +126,7 @@ def log_cn(dic: dict):
 
 def log_en(dic):
     '''
-    英文多行log
+    英文key多行log
 
     Parameters::
         dic: dict - log dict(e.g. {name: value})
@@ -150,7 +150,7 @@ def log_en(dic):
 
 def err_en(dic: dict):
     '''
-    英文单行err
+    英文key单行err
 
     Parameters::
         dic: dict - log dict(e.g. {name: value})
@@ -163,6 +163,26 @@ def err_en(dic: dict):
         flg = dic[key] is not None
         res = set_color(str(key), color='redBack').ljust(40)
         res += (set_color(dic[key], color='redFore')if flg else '').ljust(20)
+    print(res)
+    return res
+
+
+def err_cn(dic: dict):
+    '''
+    中文key单行err
+
+    Parameters::
+        dic: dict - log dict(e.g. {name: value})
+
+    Returns::
+        res: str - formatted string
+    '''
+
+    for key in dic:
+        flg = dic[key] is not None
+        res = set_color(str(key), color='redBack').ljust(40, chr(12288))
+        res += (set_color(dic[key], color='redFore')
+                if flg else '').ljust(20, chr(12288))
     print(res)
     return res
 

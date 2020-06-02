@@ -41,12 +41,11 @@
 - 还有文法中的分隔符、算符等字符关键字
 ---------------------------------------------
 '''
-# TODO(Steve X): 识别小数 `.123` 的形式
 
 
 import ply.lex as lex
-import format_string as fs
-from gen_table import print_table
+import tools.format_string as fs
+import tools.gen_table as gt
 
 INPUT_FILE = 'input_pascal/input.pas'
 
@@ -218,23 +217,9 @@ def buile_lines(data: str = ''):
     return lines
 
 
-def run_lexical():
-    pass
-
-
-# TODO(Steve X): 给符号表添加col
-if __name__ == "__main__":
-    TABLE_LEN = 80
-    INPUT_DATA = read_data(file_name='../' + INPUT_FILE)
-    LINE_LIST = []
-    LINE_LIST = buile_lines(data=INPUT_DATA)
-    # for l in LINE_LIST:
-    #     print(l)
-    # print(LINE_LIST[0][0]['line_num'])
-
+def output_table():
     header = [
         {'header': 'Ln', 'justify': 'right', 'style': 'green'},
-        # {'header': 'Col', 'justify': 'right', 'style': 'green'},
         {'header': 'Type', 'justify': 'left', 'style': 'cyan'},
         {'header': 'Value', 'justify': 'left', 'style': 'red'},
     ]
@@ -244,5 +229,15 @@ if __name__ == "__main__":
         for tok in row:
             data.append((str(tok.lineno), tok.type, str(tok.value)))
 
-    print(data)
-    print_table(header_list=header, data_list=data)
+    gt.print_table(header_list=header, data_list=data)
+
+
+if __name__ == "__main__":
+    TABLE_LEN = 80
+    INPUT_DATA = read_data(file_name='../' + INPUT_FILE)
+    LINE_LIST = []
+    LINE_LIST = buile_lines(data=INPUT_DATA)
+    # for l in LINE_LIST:
+    #     print(l)
+    # print(LINE_LIST[0][0]['line_num'])
+    output_table()

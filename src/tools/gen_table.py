@@ -12,8 +12,7 @@
 * GitHub       : https://github.com/Steve-Xyh
 ---------------------------------------------
 * Notice
--
--
+- pip install rich
 ---------------------------------------------
 '''
 
@@ -22,29 +21,29 @@ from rich.console import Console
 from rich.table import Table
 
 
-def print_table(title: str = '', header_list: list = [{'header': '', 'justify': '', 'style': ''}], data_list: list = [()]):
+def print_table(title: str = '', header_list: list = None, data_list: list = None):
     '''
     Render and print a tible in beautiful style
 
     Parameters::
         title: str - title of the table
         header_list: list - header of each column, e.g. [{'header': '', 'justify': '', 'style': ''}]
-        data_list: list - data of the table
+        data_list: list - data of the table, e.g. [(val_1, val_2,...)]
     '''
 
     table = Table(title=title)
 
     # Add header for each column
-    for hd in header_list:
+    for hdr in header_list:
         try:
             table.add_column(
-                header=hd['header'],
-                justify=hd['justify'],
-                style=hd['style']
+                header=hdr['header'],
+                justify=hdr['justify'],
+                style=hdr['style']
             )
         except KeyError:
             table.add_column(
-                header=hd['header'],
+                header=hdr['header'],
             )
 
     # Add data for each row
