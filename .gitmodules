@@ -13,3 +13,6 @@
 [submodule ".demo_project/ply"]
 	path = .demo_project/ply
 	url = https://github.com/dabeaz/ply.git
+[submodule ".demo_project/pascal-in-python"]
+	path = .demo_project/pascal-in-python
+	url = https://github.com/alcides/pascal-in-python.git
