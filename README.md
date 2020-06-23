@@ -1,4 +1,5 @@
-# Compiler-Course  
+# 我说NPU的某些同学们抄作业好歹给我一个star吧, 白嫖真不怕我乱写把你们给坑了?
+# 何况👴还没写完
 Compiler lab project and demo  
 A minipascal parser implemented with Python-PLY  
   
