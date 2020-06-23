@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-* Project Name : npupa_bot
+* Project Name : Compiler-Course
 * File Name    : format_string.py
 * Description  : String formatter
 * Create Time  : 2020-05-14 11:45:00
@@ -203,6 +203,5 @@ def set_color(string, color):
 
 
 if __name__ == "__main__":
-    a = 'This is red.'
-    b = set_color(a, 'redFore')
-    print(b)
+    str_a = set_color('This is red.', 'redFore')
+    print(str_a)

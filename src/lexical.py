@@ -218,6 +218,15 @@ def buile_lines(data: str = ''):
 
 
 def output_table():
+    '''
+    Output the token table
+
+    Parameters::
+        null
+    Returns::
+        null
+    '''
+
     header = [
         {'header': 'Ln', 'justify': 'right', 'style': 'green'},
         {'header': 'Type', 'justify': 'left', 'style': 'cyan'},
