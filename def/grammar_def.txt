@@ -1,5 +1,5 @@
 - MIniPascal语言的文法：
-    * G[ProgDef]:
+    G[ProgDef]:
     * ProgDef       : Program Iden ';' SubProg '.'
     * SubProg       : VarDef CompState
     * VarDef        : Var VarDefList ';'

@@ -14,7 +14,7 @@
 * Notice
 
 - MIniPascal语言的文法：
-    * G[ProgDef]:
+    G[ProgDef]:
     * ProgDef       : Program Iden ';' SubProg '.'
     * SubProg       : VarDef CompState
     * VarDef        : Var VarDefList ';'
@@ -69,10 +69,6 @@
 
 import ply.yacc as yacc
 from lexical import tokens
-
-
-def p_G(p):
-    'G[ProgDef] : empty'
 
 
 def p_ProgDef(p):
