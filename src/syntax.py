@@ -30,7 +30,7 @@
     * S_L           : StateList ';'
     * Statement     : AssignState
                     | ISE Statement
-                    | IBT   Statement
+                    | IBT Statement
                     | WBD Statement
                     | CompState
     * CompState     : Begin StateList End
@@ -76,11 +76,14 @@ def p_ProgDef(p):
 
 
 def p_SubProg(p):
-    'SubProg : VarDef CompState'
+    '''SubProg : VarDef CompState'''
 
 
 def p_VarDef(p):
     '''VarDef : Var VarDefList ';' '''
+
+    if len(p) > 2:
+        p[0] = p[2]
 
 
 def p_VarDefList(p):
@@ -109,16 +112,21 @@ def p_StateList(p):
     '''StateList    : S_L Statement
                     | Statement
     '''
+    print('-'*10,'StateList')
+    for i in p:
+        print(i)
+    print('-'*10)
 
 
 def p_S_L(p):
-    '''S_L : StateList ';' '''
+    '''S_L : StateList ';'
+    '''
 
 
 def p_Statement(p):
     '''Statement    : AssignState
                     | ISE Statement
-                    | IBT   Statement
+                    | IBT Statement
                     | WBD Statement
                     | CompState
     '''
@@ -130,6 +138,13 @@ def p_CompState(p):
 
 def p_AssignState(p):
     '''AssignState : Variable AssignOper Expr'''
+    # p[0] = p[3]
+    # p[1] = p[3]
+
+    print('-'*10)
+    for i in p:
+        print(i)
+    print('-'*10)
 
 
 def p_ISE(p):
@@ -159,8 +174,34 @@ def p_Expr(p):
             | Variable
             | Const
     '''
+    # 'expression : expression op term'
+    #   ^            ^          ^  ^
+    #  p[0]         p[1]      p[2] p[3]
+
+    if len(p) == 4 and p[0]:
+        print('-'*10)
+        for i in p:
+            print(i)
+        print('-'*10)
+        if p[2] == '+':
+            p[0] = p[1] + p[3]
+        elif p[2] == '-':
+            p[0] = p[1] - p[3]
+        elif p[2] == '*':
+            p[0] = p[1] * p[3]
+        elif p[2] == '/':
+            p[0] = p[1] / p[3]
+        elif p[1] == '(' and p[3] == ')':
+            p[0] = p[2]
+    elif len(p) == 2:
+        p[0] = p[1]
+    else:
+        for i in p:
+            print('/*******/', i, '/******/', end='|')
+        print('')
 
 
+# TODO(Steve X): 完成 p[0]
 def p_BoolExpr(p):
     '''BoolExpr : Expr RelationOp Expr
                 | BoolExpr And BoolExpr
@@ -168,19 +209,40 @@ def p_BoolExpr(p):
                 | Not BoolExpr
                 | '(' BoolExpr ')'
     '''
+    # 'expression : expression op term'
+    #   ^            ^          ^  ^
+    #  p[0]         p[1]      p[2] p[3]
+
+    if len(p) == 4 and p[0]:
+        print('-'*10)
+        for i in p:
+            print(i)
+        print('-'*10)
+        if p[2] == 'and':
+            p[0] = p[1] and p[3]
+        elif p[2] == 'or':
+            p[0] = p[1] or p[3]
+        elif p[1] == '(' and p[3] == ')':
+            p[0] = p[2]
+    elif len(p) == 2 and p[1] == 'not':
+        p[0] = not p[1]
+    else:
+        for i in p:
+            print('/*******/', i, '/******/', end='|')
+        print('')
 
 
 def p_Variable(p):
     '''Variable : Iden'''
 
 
-def Const(p):
+def p_Const(p):
     '''Const    : IntNo
                 | RealNo
     '''
+    p[0] = p[1]
 
 
-# TODO(Steve X): 完成p[0]
 def p_RelationOp(p):
     '''RelationOp   : '<'
                     | '>'
@@ -191,25 +253,43 @@ def p_RelationOp(p):
     '''
 
 
+# Operator precedence
+precedence = (
+    ('left', '+', '-'),
+    ('left', '*', '/'),
+    ('right', 'UMINUS'),
+)
+
+
 # Error rule for syntax errors
+# def p_error(p):
+#     print("Syntax error in input!")
+#     print(p)
 def p_error(p):
-    print("Syntax error in input!")
+    if p == None:
+        token = "end of file"
+    else:
+        token = f"{p.type}({p.value}) on line {p.lineno}"
 
-
-def p_empty(p):
-    'empty :'
-    pass
+    print(f"Syntax error: Unexpected {token}")
 
 
 # Build the parser
-parser = yacc.yacc()
+parser = yacc.yacc(debug=True)
+INPUT_FILE = 'input_pascal/addition.pas'
+with open('../' + INPUT_FILE) as f:
+    data = f.read()
+    prog = parser.parse(data)
+    print(prog)
 
-while True:
-    try:
-        s = input('calc > ')
-    except EOFError:
-        break
-    if not s:
-        continue
-    result = parser.parse(s)
-    print(result)
+# result = parser.parse(lx.INPUT_DATA)
+# print(result)
+# while True:
+#     try:
+#         s = input('input > ')
+#     except EOFError:
+#         break
+#     if not s:
+#         continue
+#     result = parser.parse(s)
+#     print(result)

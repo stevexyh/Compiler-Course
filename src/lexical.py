@@ -47,25 +47,39 @@ import ply.lex as lex
 import tools.format_string as fs
 import tools.gen_table as gt
 
-INPUT_FILE = 'input_pascal/input.pas'
-
+INPUT_FILE = 'input_pascal/addition.pas'
+TABLE_LEN = 80
 
 #---------------------------------Preset vars for PLY module---------------------------------#
 reserved = {
     'program': 'Program',
+    # 'Program': 'Program',
     'var': 'Var',
+    # 'Var': 'Var',
     'begin': 'Begin',
+    # 'Begin': 'Begin',
     'end': 'End',
+    # 'End': 'End',
     'do': 'Do',
+    # 'Do': 'Do',
     'while': 'While',
+    # 'While': 'While',
     'if': 'If',
+    # 'If': 'If',
     'then': 'Then',
+    # 'Then': 'Then',
     'else': 'Else',
+    # 'Else': 'Else',
     'and': 'And',
+    # 'And': 'And',
     'not': 'Not',
+    # 'Not': 'Not',
     'or': 'Or',
+    # 'Or': 'Or',
     'integer': 'Integer',
+    # 'Integer': 'Integer',
     'reald': 'Real',
+    # 'Reald': 'Real',
 }
 
 
@@ -81,7 +95,7 @@ tokens = [
 ] + list(reserved.values())
 
 # Literal Characters
-literals = "+-*/()<>=,;."
+literals = "+-*/()<>=,;:."
 
 # Regular expression rules for simple tokens
 t_GE = r'>='
@@ -97,7 +111,8 @@ t_ignore = ' \t'
 
 #-----------------------------RegEx rules for preset functions-------------------------------#
 def t_Iden(t):
-    r'\b[a-zA-Z_][0-9a-zA-Z_]*\b[^\.]'
+    r'\b[a-zA-Z_][0-9a-zA-Z_]*'
+    # r'\b[a-zA-Z_][0-9a-zA-Z_]*\b[^\.]'
     if t.value.endswith('\n'):
         t_newline(t)
 
@@ -108,7 +123,8 @@ def t_Iden(t):
 
 
 def t_RealNo(t):
-    r'\b(\d*\.\d+|\d+(\.\d+)?([Ee][+-]?\d+))\b[^\.]'
+    r'\b(\d*\.\d+|\d+(\.\d+)?([Ee][+-]?\d+))'
+    # r'\b(\d*\.\d+|\d+(\.\d+)?([Ee][+-]?\d+))\b[^\.]'
     if t.value.endswith('\n'):
         t_newline(t)
 
@@ -117,7 +133,8 @@ def t_RealNo(t):
 
 
 def t_IntNo(t):
-    r'\b[0-9]+\b[^\.]'
+    r'\b[0-9]+'
+    # r'\b[0-9]+\b[^\.]'
     if t.value.endswith('\n'):
         t_newline(t)
 
@@ -153,6 +170,10 @@ def t_error(t):
     print('-'*TABLE_LEN)
 
     t.lexer.skip(len(err_token))
+
+
+# Build the lexer
+lexer = lex.lex(debug=True)
 #--------------------------------------------END---------------------------------------------#
 
 
@@ -197,8 +218,6 @@ def buile_lines(data: str = ''):
     Returns::
         lines: list - a sorted list of tokens
     '''
-    # Build the lexer
-    lexer = lex.lex()
     lexer.input(data)
 
     line_no = 0
@@ -243,12 +262,11 @@ def output_table():
     gt.print_table(header_list=header, data_list=data)
 
 
-if __name__ == "__main__":
-    TABLE_LEN = 80
-    INPUT_DATA = read_data(file_name='../' + INPUT_FILE)
-    LINE_LIST = []
-    LINE_LIST = buile_lines(data=INPUT_DATA)
-    # for l in LINE_LIST:
-    #     print(l)
-    # print(LINE_LIST[0][0]['line_num'])
-    output_table()
+# if __name__ == "__main__":
+
+INPUT_DATA = read_data(file_name='../' + INPUT_FILE)
+LINE_LIST = buile_lines(data=INPUT_DATA)
+# for l in LINE_LIST:
+#     print(l)
+# print(LINE_LIST[0][0]['line_num'])
+output_table()

@@ -7,3 +7,9 @@
 [submodule ".demo_project/pascal.py"]
 	path = .demo_project/pascal.py
 	url = https://github.com/brianwu02/pascal.py.git
+[submodule ".demo_project/calculator"]
+	path = .demo_project/calculator
+	url = http://10.69.12.175:30080/compiler2020/calculator.git
+[submodule ".demo_project/ply"]
+	path = .demo_project/ply
+	url = https://github.com/dabeaz/ply.git
