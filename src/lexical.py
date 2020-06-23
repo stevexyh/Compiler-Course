@@ -80,6 +80,8 @@ tokens = [
     'Iden',
 ] + list(reserved.values())
 
+# Literal Characters
+literals = "+-*/()<>=,;."
 
 # Regular expression rules for simple tokens
 t_GE = r'>='
