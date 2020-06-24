@@ -33,6 +33,7 @@
                     | IBT Statement
                     | WBD Statement
                     | CompState
+                    | empty
     * CompState     : Begin StateList End
     * AssignState   : Variable AssignOper Expr
     * ISE           : IBT Statement Else
@@ -112,7 +113,8 @@ def p_StateList(p):
     '''StateList    : S_L Statement
                     | Statement
     '''
-    print('-'*10,'StateList')
+
+    print('-'*10, 'StateList')
     for i in p:
         print(i)
     print('-'*10)
@@ -129,6 +131,7 @@ def p_Statement(p):
                     | IBT Statement
                     | WBD Statement
                     | CompState
+                    | empty
     '''
 
 
@@ -141,7 +144,7 @@ def p_AssignState(p):
     # p[0] = p[3]
     # p[1] = p[3]
 
-    print('-'*10)
+    print('-'*10, 'Assign')
     for i in p:
         print(i)
     print('-'*10)
@@ -178,11 +181,7 @@ def p_Expr(p):
     #   ^            ^          ^  ^
     #  p[0]         p[1]      p[2] p[3]
 
-    if len(p) == 4 and p[0]:
-        print('-'*10)
-        for i in p:
-            print(i)
-        print('-'*10)
+    if len(p) == 4:
         if p[2] == '+':
             p[0] = p[1] + p[3]
         elif p[2] == '-':
@@ -193,15 +192,21 @@ def p_Expr(p):
             p[0] = p[1] / p[3]
         elif p[1] == '(' and p[3] == ')':
             p[0] = p[2]
+    elif p[1] == '-':
+        p[0] = -p[2]
     elif len(p) == 2:
         p[0] = p[1]
     else:
         for i in p:
-            print('/*******/', i, '/******/', end='|')
+            print('err>>>', i, '<<<', end='|')
         print('')
 
+    print('-'*10, 'Expr')
+    for i in p:
+        print(i)
+    print('-'*10)
 
-# TODO(Steve X): 完成 p[0]
+
 def p_BoolExpr(p):
     '''BoolExpr : Expr RelationOp Expr
                 | BoolExpr And BoolExpr
@@ -218,7 +223,19 @@ def p_BoolExpr(p):
         for i in p:
             print(i)
         print('-'*10)
-        if p[2] == 'and':
+        if p[2] == '<':
+            p[0] = p[1] < p[3]
+        elif p[2] == '>':
+            p[0] = p[1] > p[3]
+        elif p[2] == '=':
+            p[0] = p[1] == p[3]
+        elif p[2] == '>=':
+            p[0] = p[1] >= p[3]
+        elif p[2] == '<>':
+            p[0] = p[1] != p[3]
+        elif p[2] == '<=':
+            p[0] = p[1] <= p[3]
+        elif p[2] == 'and':
             p[0] = p[1] and p[3]
         elif p[2] == 'or':
             p[0] = p[1] or p[3]
@@ -235,11 +252,14 @@ def p_BoolExpr(p):
 def p_Variable(p):
     '''Variable : Iden'''
 
+    p[0] = p[1]
+
 
 def p_Const(p):
     '''Const    : IntNo
                 | RealNo
     '''
+
     p[0] = p[1]
 
 
@@ -252,6 +272,8 @@ def p_RelationOp(p):
                     | LE
     '''
 
+    p[0] = p[1]
+
 
 # Operator precedence
 precedence = (
@@ -259,6 +281,12 @@ precedence = (
     ('left', '*', '/'),
     ('right', 'UMINUS'),
 )
+
+
+def p_empty(p):
+    'empty :'
+
+    pass
 
 
 # Error rule for syntax errors
@@ -276,11 +304,11 @@ def p_error(p):
 
 # Build the parser
 parser = yacc.yacc(debug=True)
-INPUT_FILE = 'input_pascal/addition.pas'
-with open('../' + INPUT_FILE) as f:
-    data = f.read()
-    prog = parser.parse(data)
-    print(prog)
+# INPUT_FILE = 'input_pascal/addition.pas'
+# with open('../' + INPUT_FILE) as f:
+#     data = f.read()
+#     prog = parser.parse(data)
+#     print(prog)
 
 # result = parser.parse(lx.INPUT_DATA)
 # print(result)

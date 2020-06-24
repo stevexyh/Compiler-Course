@@ -18,6 +18,7 @@
                     | IBT   Statement
                     | WBD Statement
                     | CompState
+                    | empty
     * CompState     : Begin StateList End
     * AssignState   : Variable AssignOper Expr
     * ISE           : IBT Statement Else

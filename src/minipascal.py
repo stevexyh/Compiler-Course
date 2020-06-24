@@ -21,7 +21,7 @@ import lexical
 from lexical import tokens
 import syntax
 
-
+lexical.lexer.lineno = 1
 INPUT_FILE = 'input_pascal/addition.pas'
 with open('../' + INPUT_FILE) as f:
     data = f.read()
