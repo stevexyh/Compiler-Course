@@ -70,6 +70,7 @@
 
 import ply.yacc as yacc
 from lexical import tokens
+from codegen import ast as ast
 
 
 #----------------------------Preset grammar def functions for PLY----------------------------#
@@ -81,6 +82,7 @@ def p_SubProg(p):
     '''SubProg : VarDef CompState'''
 
 
+# FIXME(Steve X): store var into variable_list
 def p_VarDef(p):
     '''VarDef : Var VarDefList ';' '''
 
@@ -103,11 +105,18 @@ def p_Type(p):
             | Real
     '''
 
+    p[0] = ast.Node(node_type='VarList', value=p[2], children=[p[1]])
+
 
 def p_VarList(p):
     '''VarList  : VarList ',' Variable
                 | Variable
     '''
+
+    if len(p) == 2:
+        p[0] = ast.Node(node_type='VarList', value=p[2], children=[p[1]])
+    elif len(p) == 4:
+        p[0] = ast.Node(node_type='VarList', value=p[2], children=[p[1], p[3]])
 
 
 def p_StateList(p):
@@ -143,7 +152,6 @@ def p_CompState(p):
 def p_AssignState(p):
     '''AssignState : Variable AssignOper Expr'''
     # p[0] = p[3]
-    # p[1] = p[3]
 
     print('-'*10, 'Assign')
     for i in p:
@@ -302,6 +310,9 @@ def p_error(p):
 
     print(f"Syntax error: Unexpected {token}")
 
+
+# Store the declared vars
+variable_list = {}
 
 # Build the parser
 parser = yacc.yacc(debug=True)
