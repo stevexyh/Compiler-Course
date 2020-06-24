@@ -77,17 +77,20 @@ from codegen import ast as ast
 def p_ProgDef(p):
     '''ProgDef : Program Iden ';' SubProg '.' '''
 
+    p[0] = ast.Node(node_type='ProgDef', children=[p[2], p[4]])
+
 
 def p_SubProg(p):
     '''SubProg : VarDef CompState'''
+
+    p[0] = ast.Node(node_type='SubProg', children=[p[1], p[2]])
 
 
 # FIXME(Steve X): store var into variable_list
 def p_VarDef(p):
     '''VarDef : Var VarDefList ';' '''
 
-    if len(p) > 2:
-        p[0] = p[2]
+    p[0] = ast.Node(node_type='VarDef',  children=[p[2]])
 
 
 def p_VarDefList(p):
@@ -95,9 +98,16 @@ def p_VarDefList(p):
                     | VarDefState
     '''
 
+    if len(p) == 2:
+        p[0] = ast.Node(node_type='VarDefList',  children=[p[1]])
+    elif len(p) == 4:
+        p[0] = ast.Node(node_type='VarDefList',  children=[p[1], p[3]])
+
 
 def p_VarDefState(p):
     '''VarDefState : VarList ':' Type'''
+
+    p[0] = ast.Node(node_type='VarDefState',  children=[p[1], p[3]])
 
 
 def p_Type(p):
@@ -105,7 +115,7 @@ def p_Type(p):
             | Real
     '''
 
-    p[0] = ast.Node(node_type='VarList', value=p[2], children=[p[1]])
+    p[0] = ast.Node(node_type='Type', children=[p[1]])
 
 
 def p_VarList(p):
@@ -114,9 +124,9 @@ def p_VarList(p):
     '''
 
     if len(p) == 2:
-        p[0] = ast.Node(node_type='VarList', value=p[2], children=[p[1]])
+        p[0] = ast.Node(node_type='VarList', children=[p[1]])
     elif len(p) == 4:
-        p[0] = ast.Node(node_type='VarList', value=p[2], children=[p[1], p[3]])
+        p[0] = ast.Node(node_type='VarList', children=[p[1], p[3]])
 
 
 def p_StateList(p):
@@ -124,15 +134,17 @@ def p_StateList(p):
                     | Statement
     '''
 
-    print('-'*10, 'StateList')
-    for i in p:
-        print(i)
-    print('-'*10)
+    if len(p) == 2:
+        p[0] = ast.Node(node_type='StateList', children=[p[1]])
+    elif len(p) == 3:
+        p[0] = ast.Node(node_type='StateList', children=[p[1], p[2]])
 
 
 def p_S_L(p):
     '''S_L : StateList ';'
     '''
+
+    p[0] = ast.Node(node_type='S_L', children=[p[1]])
 
 
 def p_Statement(p):
@@ -144,35 +156,46 @@ def p_Statement(p):
                     | empty
     '''
 
+    if len(p) == 2:
+        p[0] = ast.Node(node_type='Statement', children=[p[1]])
+    elif len(p) == 3:
+        p[0] = ast.Node(node_type='Statement', children=[p[1], p[2]])
+
 
 def p_CompState(p):
     '''CompState : Begin StateList End'''
 
+    p[0] = ast.Node(node_type='CompState', children=[p[2]])
+
 
 def p_AssignState(p):
     '''AssignState : Variable AssignOper Expr'''
-    # p[0] = p[3]
 
-    print('-'*10, 'Assign')
-    for i in p:
-        print(i)
-    print('-'*10)
+    p[0] = ast.Node(node_type='AssignState', children=[p[1], p[3]])
 
 
 def p_ISE(p):
     '''ISE : IBT Statement Else'''
 
+    p[0] = ast.Node(node_type='ISE', children=[p[1], p[2]])
+
 
 def p_IBT(p):
     '''IBT : If BoolExpr Then'''
+
+    p[0] = ast.Node(node_type='IBT', children=[p[2]])
 
 
 def p_WBD(p):
     '''WBD : Wh BoolExpr Do'''
 
+    p[0] = ast.Node(node_type='WBD', children=[p[1], p[2]])
+
 
 def p_Wh(p):
     '''Wh : While'''
+
+    p[0] = ast.Node(node_type='Wh', children=[p[1]])
 
 
 # FIXME(Steve X): Variable, Const 那里不知道对不对
@@ -190,78 +213,47 @@ def p_Expr(p):
     #   ^            ^          ^  ^
     #  p[0]         p[1]      p[2] p[3]
 
-    if len(p) == 4:
-        if p[2] == '+':
-            p[0] = p[1] + p[3]
-        elif p[2] == '-':
-            p[0] = p[1] - p[3]
-        elif p[2] == '*':
-            p[0] = p[1] * p[3]
-        elif p[2] == '/':
-            p[0] = p[1] / p[3]
-        elif p[1] == '(' and p[3] == ')':
-            p[0] = p[2]
-    elif p[1] == '-':
-        p[0] = -p[2]
-    elif len(p) == 2:
-        p[0] = p[1]
-    else:
-        for i in p:
-            print('err>>>', i, '<<<', end='|')
-        print('')
-
-    print('-'*10, 'Expr')
-    for i in p:
-        print(i)
-    print('-'*10)
+    if len(p) == 2:
+        p[0] = ast.Node(node_type='Expr', children=[p[1]])
+    elif len(p) == 4:
+        if p[1] == '(':
+            p[0] = ast.Node(node_type='Expr', children=[p[2]])
+        elif p[1] == '-':
+            p[0] = ast.Node(node_type='Expr', children=[p[2]])
+        elif p[2] in '+-*/':
+            p[0] = ast.Node(node_type='Expr', children=[p[1], p[3]])
 
 
 def p_BoolExpr(p):
     '''BoolExpr : Expr RelationOp Expr
-                | BoolExpr And BoolExpr
-                | BoolExpr Or BoolExpr
+                | BoolExpr_AndOr
                 | Not BoolExpr
                 | '(' BoolExpr ')'
     '''
-    # 'expression : expression op term'
-    #   ^            ^          ^  ^
-    #  p[0]         p[1]      p[2] p[3]
 
-    if len(p) == 4 and p[0]:
-        print('-'*10)
-        for i in p:
-            print(i)
-        print('-'*10)
-        if p[2] == '<':
-            p[0] = p[1] < p[3]
-        elif p[2] == '>':
-            p[0] = p[1] > p[3]
-        elif p[2] == '=':
-            p[0] = p[1] == p[3]
-        elif p[2] == '>=':
-            p[0] = p[1] >= p[3]
-        elif p[2] == '<>':
-            p[0] = p[1] != p[3]
-        elif p[2] == '<=':
-            p[0] = p[1] <= p[3]
-        elif p[2] == 'and':
-            p[0] = p[1] and p[3]
-        elif p[2] == 'or':
-            p[0] = p[1] or p[3]
-        elif p[1] == '(' and p[3] == ')':
-            p[0] = p[2]
-    elif len(p) == 2 and p[1] == 'not':
-        p[0] = not p[1]
-    else:
-        for i in p:
-            print('/*******/', i, '/******/', end='|')
-        print('')
+    if len(p) == 2:
+        p[0] = ast.Node(node_type='BoolExpr', children=[p[1]])
+    elif len(p) == 3:
+        p[0] = ast.Node(node_type='BoolExpr', children=[p[2]])
+    elif len(p) == 4:
+        if p[1] == '(':
+            p[0] = ast.Node(node_type='BoolExpr', children=[p[2]])
+        else:
+            p[0] = ast.Node(node_type='BoolExpr', children=[p[1], p[2], p[3]])
+
+
+def p_BoolExpr_AndOr(p):
+    '''BoolExpr_AndOr   : BoolExpr And BoolExpr
+                        | BoolExpr Or BoolExpr
+    '''
+
+    p[0] = ast.Node(node_type='BoolExpr_AndOr', children=[p[1], p[3]])
 
 
 def p_Variable(p):
     '''Variable : Iden'''
 
-    p[0] = p[1]
+    p[0] = ast.Node(node_type='Variable', children=[p[1]])
 
 
 def p_Const(p):
@@ -269,7 +261,7 @@ def p_Const(p):
                 | RealNo
     '''
 
-    p[0] = p[1]
+    p[0] = ast.Node(node_type='Const', children=[p[1]])
 
 
 def p_RelationOp(p):
@@ -281,7 +273,7 @@ def p_RelationOp(p):
                     | LE
     '''
 
-    p[0] = p[1]
+    p[0] = ast.Node(node_type='RelationOp', children=[p[1]])
 
 
 # Operator precedence

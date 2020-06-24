@@ -18,11 +18,30 @@
 '''
 
 import lexical
-from lexical import tokens
 import syntax
+from lexical import tokens
+from codegen import ast
+
+
+def dfs_showdir(node: ast.Node, depth):
+    if depth == 0:
+        print("Node:[" + node.node_type + "]{")
+
+    for item in node.children:
+        # print("| " * depth + "+--" + item)
+        print(item)
+        newitem = item
+        dfs_showdir(newitem, depth + 1)
+
+    print('}')
+
 
 lexical.lexer.lineno = 1
 INPUT_FILE = 'input_pascal/addition.pas'
 with open('../' + INPUT_FILE) as f:
     data = f.read()
     prog = syntax.parser.parse(data)
+    print(prog)
+    # prog.print_tree()
+    prog.dot.render()
+    # dfs_showdir(prog, 0)
