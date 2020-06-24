@@ -72,6 +72,7 @@ import ply.yacc as yacc
 from lexical import tokens
 
 
+#----------------------------Preset grammar def functions for PLY----------------------------#
 def p_ProgDef(p):
     '''ProgDef : Program Iden ';' SubProg '.' '''
 
@@ -166,7 +167,7 @@ def p_Wh(p):
     '''Wh : While'''
 
 
-# TODO(Steve X): 完成语法规则p[0]
+# FIXME(Steve X): Variable, Const 那里不知道对不对
 def p_Expr(p):
     '''Expr : Expr '+' Expr
             | Expr '-' Expr
@@ -304,6 +305,10 @@ def p_error(p):
 
 # Build the parser
 parser = yacc.yacc(debug=True)
+
+#--------------------------------------------END---------------------------------------------#
+
+
 # INPUT_FILE = 'input_pascal/addition.pas'
 # with open('../' + INPUT_FILE) as f:
 #     data = f.read()
