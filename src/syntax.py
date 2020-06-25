@@ -70,8 +70,9 @@
 
 import ply.yacc as yacc
 from lexical import tokens
-from codegen import quadruple
 from codegen import ast
+from codegen import quadruple
+from codegen import var_table
 
 
 #----------------------------Preset grammar def functions for PLY----------------------------#
@@ -106,6 +107,7 @@ def p_VarDefList(p):
         p[0] = ast.Node(node_type='VarDefList', children=[p[1], p[3]])
 
 
+# FIXME(Steve X): 构造 AST 时调用已有变量会被认为是新节点
 def p_VarDefState(p):
     '''VarDefState : VarList ':' Type'''
 
@@ -281,7 +283,7 @@ def p_BoolExpr(p):
         quadruple_list.add(quad)
 
 
-# FIXME(Steve X): 关键字大小写匹配
+# TODO(Steve X): 关键字大小写匹配
 def p_BoolExpr_AndOr(p):
     '''BoolExpr_AndOr   : BoolExpr And BoolExpr
                         | BoolExpr Or BoolExpr
@@ -355,5 +357,5 @@ parser = yacc.yacc(debug=True)
 
 # Store the declared vars & quadruples
 # quadruple = (OP，arg1，arg2，result)
-variable_list = {}
+variable_list = var_table.VarTable()
 quadruple_list = quadruple.Quadruple()

@@ -18,16 +18,20 @@
 '''
 
 
-class Quadruple():
+from .table import Table
+
+
+class Quadruple(Table):
     '''
     Def of quadruple
 
     Parameters::
+        title: str - table title
         items: list - items in list should be a tuple(quadruple)
     '''
 
-    def __init__(self, items: list = None):
-        self.items = items if items else []
+    def __init__(self, title: str = '', items: list = None):
+        Table.__init__(self, title=title, items=items)
 
     def __str__(self):
         res = ''
@@ -38,15 +42,15 @@ class Quadruple():
 
         return res
 
-    def print_quad(self):
+    def print_tab(self):
         '''Output quadruples in a pretty table'''
 
     def add(self, item: tuple = None):
         '''
-        Add items to quadruple list
+        Add single item to quadruple list
 
         Parameters::
             item: tuple - a quadruple item (OP，arg1，arg2，result)
         '''
 
-        self.items.append(item)
+        Table.add(self, item=item)
