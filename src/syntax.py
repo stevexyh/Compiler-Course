@@ -89,7 +89,6 @@ def p_SubProg(p):
     p[0] = ast.Node(node_type='SubProg', children=[p[1], p[2]])
 
 
-# FIXME(Steve X): store var into variable_list(符号表)
 def p_VarDef(p):
     '''VarDef : Var VarDefList ';' '''
 
@@ -112,6 +111,12 @@ def p_VarDefState(p):
     '''VarDefState : VarList ':' Type'''
 
     p[0] = ast.Node(node_type='VarDefState', children=[p[1], p[3]])
+    for var in p[1].value:
+        variable_list.add({
+            'name': var.name,
+            'value': var.value,
+            'var_type': p[3].value,
+        })
 
 
 def p_Type(p):
@@ -122,15 +127,17 @@ def p_Type(p):
     p[0] = ast.Node(node_type='Type', value=p[1])
 
 
+# XXX(Steve X): 输出 AST 时, VarList 每一步元素都不变
 def p_VarList(p):
     '''VarList  : VarList ',' Variable
                 | Variable
     '''
 
     if len(p) == 2:
-        p[0] = ast.Node(node_type='VarList', children=[p[1]])
+        p[0] = ast.Node(node_type='VarList', value=[p[1]], children=[p[1]])
     elif len(p) == 4:
-        p[0] = ast.Node(node_type='VarList', children=[p[1], p[3]])
+        p[1].value.append(p[3])
+        p[0] = ast.Node(node_type='VarList', value=p[1].value, children=[p[1], p[3]])
 
 
 def p_StateList(p):

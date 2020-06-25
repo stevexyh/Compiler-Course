@@ -33,3 +33,6 @@ if __name__ == "__main__":
 
         quad = syntax.quadruple_list
         print(quad)
+
+        var = syntax.variable_list
+        print(var)

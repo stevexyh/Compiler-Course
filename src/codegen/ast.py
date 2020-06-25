@@ -42,7 +42,12 @@ class Node(NodeCnt):
         res = f'id   : {self.idx}\n'
         res += f'Type : {self.node_type}\n'
         res += f'Name: {self.name}\n' if self.name else ''
-        res += f'Value: {self.value}\n' if self.value else ''
+
+        if isinstance(self.value, list):
+            value = [i.name for i in self.value]
+        else:
+            value = str(self.value)
+        res += f'Value: {value}\n' if self.value else ''
 
         return str(res)
 
