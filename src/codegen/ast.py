@@ -46,6 +46,8 @@ class Node(NodeCnt):
         return str(res)
 
     def print_tree(self):
+        '''Output tree in string'''
+
         def print_node(self):
             indent = '    '
             res = '\n' + indent*self.depth + 'Type: ['+str(self.node_type)+']{'
@@ -77,11 +79,10 @@ class Node(NodeCnt):
 
 def draw_graph(root: Node):
     '''Visualize tree by Graphviz'''
-    tree = pgv.AGraph(strict=True, directed=True)
 
-    # 绘制以某个节点为根节点的二叉树
+    tree = pgv.AGraph(strict=True, directed=True, name='AST')
+
     def print_node(node: Node):
-
         for i in range(len(node.children)):
             if node.children[i]:
                 tree.add_edge(node, node.children[i])
@@ -91,4 +92,5 @@ def draw_graph(root: Node):
     print(tree.string())
 
     tree.layout(prog='dot')
-    tree.draw(path='./graph.pdf', format='pdf')
+    tree.draw(path='graph/AST.pdf', format='pdf')
+    tree.draw(path='graph/AST.png', format='png')

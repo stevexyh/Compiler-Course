@@ -20,6 +20,10 @@ A minipascal parser implemented with Python-PLY
 8 directories, 15 files
 ```  
 
+## AST
+![AST](src/graph/AST.png)
+
+
 ## Environment
 - `Python 3`
 - `Linux / macOS`
