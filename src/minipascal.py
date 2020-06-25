@@ -19,7 +19,6 @@
 
 import lexical
 import syntax
-from lexical import tokens
 from codegen import ast
 
 
