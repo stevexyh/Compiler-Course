@@ -40,7 +40,8 @@ INPUT_FILE = 'input_pascal/addition.pas'
 with open('../' + INPUT_FILE) as f:
     data = f.read()
     prog = syntax.parser.parse(data)
-    print(prog)
+    print(prog.print_tree())
+    ast.draw_graph(prog)
     # prog.traverse_depth(depth=0)
     # res = prog.print_tree()
     # print(res)

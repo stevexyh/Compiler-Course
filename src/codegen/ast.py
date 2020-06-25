@@ -18,11 +18,16 @@
 '''
 
 
-import uuid
-from graphviz import Digraph
+import pygraphviz as pgv
 
 
-class Node:
+class NodeCnt(object):
+    '''Super class of AST node, used for counting'''
+
+    cnt = 0
+
+
+class Node(NodeCnt):
     '''Def of AST node'''
 
     def __init__(self, node_type: str = '', value=None, children: list = None, depth: int = 0):
@@ -30,16 +35,24 @@ class Node:
         self.depth = depth
         self.value = value
         self.children = children if children else []
-        self.dot = Digraph(comment='ASTree')
+        self.idx = self.cnt
+        NodeCnt.cnt += 1
 
     def __str__(self):
-        def print_tree(self):
+        res = f'Type : {self.node_type}\n'
+        res += f'Value: {self.value}\n' if self.value else ''
+        res += f'id   : {self.idx}'
+
+        return str(res)
+
+    def print_tree(self):
+        def print_node(self):
             indent = '    '
             res = '\n' + indent*self.depth + 'Type: ['+str(self.node_type)+']{'
             if self.children:
                 for child in self.children:
                     if child:
-                        res += print_tree(child)
+                        res += print_node(child)
                     else:
                         res += '\n'+indent * (self.depth+1) + 'empty'
             else:
@@ -57,48 +70,25 @@ class Node:
                     traverse_depth(self.children[i], depth=self.depth+1)
 
         traverse_depth(self)
-        res = print_tree(self)
+        res = print_node(self)
 
         return res
 
-    # def print_tree(self, save_path='./Binary_Tree.gv', label=False):
-    def graphviz(self, label=False):
-        '''Visualize tree by Graphviz'''
 
-        # colors for labels of nodes
-        # colors = ['skyblue', 'tomato', 'orange',
-        #           'purple', 'green', 'yellow', 'pink', 'red']
+def draw_graph(root: Node):
+    '''Visualize tree by Graphviz'''
+    tree = pgv.AGraph(strict=True, directed=True)
 
-        # 绘制以某个节点为根节点的二叉树
-        def print_node(node, node_tag):
-            # 节点颜色
-            # color = sample(colors, 1)[0]
+    # 绘制以某个节点为根节点的二叉树
+    def print_node(node: Node):
 
-            for i in range(len(node.children)):
-                if node.children[i]:
-                    child_tag = str(uuid.uuid1())
-                    self.dot.node(
-                        child_tag,
-                        str(node.children[i].data),
-                        style='filled',
-                        # color=color
-                    )
+        for i in range(len(node.children)):
+            if node.children[i]:
+                tree.add_edge(node, node.children[i])
+                print_node(node.children[i])
 
-                    # 子节点与其父节点的连线, 是否在连接线上写上标签
-                    label_string = 'child' if label else ''
-                    self.dot.edge(node_tag, child_tag, label=label_string)
+    print_node(root)
+    print(tree.string())
 
-                    print_node(node.children[i], child_tag)
-
-        # 如果树非空
-        if self.value is not None:
-            root_tag = str(uuid.uuid1())                # 根节点标签
-            self.dot.node(
-                root_tag,
-                str(self.value),
-                style='filled',
-                # color=sample(colors, 1)[0]
-            )     # 创建根节点
-            print_node(self, root_tag)
-
-        self.dot.render()                              # 保存文件为指定文件
+    tree.layout(prog='dot')
+    tree.draw(path='./graph.pdf', format='pdf')
