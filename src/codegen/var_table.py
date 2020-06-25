@@ -33,6 +33,7 @@ class VarTable(Table):
     def __init__(self, title: str = '', items: list = None):
         Table.__init__(self, title=title, items=items)
 
+    # TODO(Steve X): 符号表美化输出
     def print_tab(self):
         '''Output items in a pretty table'''
 

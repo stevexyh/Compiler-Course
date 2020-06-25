@@ -290,7 +290,7 @@ def p_BoolExpr(p):
         quadruple_list.add(quad)
 
 
-# TODO(Steve X): 关键字大小写匹配
+# XXX(Steve X): 关键字大小写匹配
 def p_BoolExpr_AndOr(p):
     '''BoolExpr_AndOr   : BoolExpr And BoolExpr
                         | BoolExpr Or BoolExpr
