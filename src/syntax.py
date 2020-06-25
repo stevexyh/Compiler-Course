@@ -71,7 +71,7 @@
 import ply.yacc as yacc
 from lexical import tokens
 from codegen import quadruple
-from codegen import ast as ast
+from codegen import ast
 
 
 #----------------------------Preset grammar def functions for PLY----------------------------#
@@ -221,7 +221,7 @@ def p_Expr(p):
         p[0] = ast.Node(node_type='Expr', value=p[1].value, children=[p[1]])
         if p[1].node_type == 'Variable':
             p[0].name = p[1].name
-            print(p[0].name, '***',p[0].value)
+            print(p[0].name, '***', p[0].value)
     elif len(p) == 4:
         if p[1] == '(':
             p[0] = ast.Node(node_type='Expr', value=p[2].value, children=[p[2]])
@@ -338,7 +338,7 @@ def p_empty(p):
 
 # Error rule for syntax errors
 def p_error(p):
-    if p == None:
+    if p is None:
         token = "end of file"
     else:
         token = f"{p.type}({p.value}) on line {p.lineno}"
