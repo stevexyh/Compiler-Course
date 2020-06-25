@@ -21,7 +21,7 @@
 import pygraphviz as pgv
 
 
-class NodeCnt(object):
+class NodeCnt():
     '''Super class of AST node, used for counting'''
 
     cnt = 0
@@ -30,9 +30,9 @@ class NodeCnt(object):
 class Node(NodeCnt):
     '''Def of AST node'''
 
-    def __init__(self, node_type: str = '', value=None, children: list = None, depth: int = 0):
+    def __init__(self, node_type: str = '', value=None, children: list = None):
         self.node_type = node_type
-        self.depth = depth
+        # depth = depth
         self.value = value
         self.children = children if children else []
         self.idx = self.cnt
@@ -45,34 +45,22 @@ class Node(NodeCnt):
 
         return str(res)
 
-    def print_tree(self):
+    def print_tree(self, depth: int = 0):
         '''Output tree in string'''
 
-        def print_node(self):
-            indent = '    '
-            res = '\n' + indent*self.depth + 'Type: ['+str(self.node_type)+']{'
-            if self.children:
-                for child in self.children:
-                    if child:
-                        res += print_node(child)
-                    else:
-                        res += '\n'+indent * (self.depth+1) + 'empty'
-            else:
-                res += '\n' + indent*(self.depth+1) + 'Value: '+str(self.value)
-                res += '\n' + indent*(self.depth+1) + 'Depth: '+str(self.depth)
+        indent = '    '
+        res = '\n' + indent*depth + 'Type: ['+str(self.node_type) + ']{'
+        if self.children:
+            for child in self.children:
+                if child:
+                    res += child.print_tree(depth=depth+1)
+                else:
+                    res += '\n'+indent * (depth+1) + 'empty'
+        else:
+            res += '\n' + indent*(depth+1) + 'Value: ' + str(self.value)
+            res += '\n' + indent*(depth+1) + 'Depth: ' + str(depth)
 
-            res += '\n' + indent * self.depth + '}'
-
-            return res
-
-        def traverse_depth(self, depth: int = 0):
-            self.depth = depth
-            for i in range(len(self.children)):
-                if self.children[i]:
-                    traverse_depth(self.children[i], depth=self.depth+1)
-
-        traverse_depth(self)
-        res = print_node(self)
+        res += '\n' + indent * depth + '}'
 
         return res
 

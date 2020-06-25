@@ -22,28 +22,11 @@ import syntax
 from codegen import ast
 
 
-def dfs_showdir(node: ast.Node, depth):
-    if depth == 0:
-        print("Node:[" + node.node_type + "]{")
-
-    for item in node.children:
-        # print("| " * depth + "+--" + item)
-        print(item)
-        newitem = item
-        dfs_showdir(newitem, depth + 1)
-
-    print('}')
-
-
-lexical.lexer.lineno = 1
-INPUT_FILE = 'input_pascal/addition.pas'
-with open('../' + INPUT_FILE) as f:
-    data = f.read()
-    prog = syntax.parser.parse(data)
-    print(prog.print_tree())
-    ast.draw_graph(prog)
-    # prog.traverse_depth(depth=0)
-    # res = prog.print_tree()
-    # print(res)
-    # prog.graphviz()
-    # dfs_showdir(prog, 0)
+if __name__ == "__main__":
+    lexical.lexer.lineno = 1
+    INPUT_FILE = 'input_pascal/addition.pas'
+    with open('../' + INPUT_FILE) as f:
+        data = f.read()
+        prog = syntax.parser.parse(data)
+        print(prog.print_tree())
+        ast.draw_graph(prog)
