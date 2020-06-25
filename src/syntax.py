@@ -77,6 +77,7 @@ from codegen import ast as ast
 def p_ProgDef(p):
     '''ProgDef : Program Iden ';' SubProg '.' '''
 
+    p[2] = ast.Node(node_type='Program', value=p[2])
     p[0] = ast.Node(node_type='ProgDef', children=[p[2], p[4]])
 
 
@@ -115,7 +116,7 @@ def p_Type(p):
             | Real
     '''
 
-    p[0] = ast.Node(node_type='Type', children=[p[1]])
+    p[0] = ast.Node(node_type='Type', value=p[1])
 
 
 def p_VarList(p):
@@ -195,7 +196,7 @@ def p_WBD(p):
 def p_Wh(p):
     '''Wh : While'''
 
-    p[0] = ast.Node(node_type='Wh', children=[p[1]])
+    p[0] = ast.Node(node_type='Wh', value=p[1])
 
 
 # FIXME(Steve X): Variable, Const 那里不知道对不对
@@ -253,7 +254,8 @@ def p_BoolExpr_AndOr(p):
 def p_Variable(p):
     '''Variable : Iden'''
 
-    p[0] = ast.Node(node_type='Variable', children=[p[1]])
+    p[0] = ast.Node(node_type='Variable', value=p[1])
+    # p[0] = ast.Node(node_type='Variable', children=[p[1]])
 
 
 def p_Const(p):
@@ -261,7 +263,8 @@ def p_Const(p):
                 | RealNo
     '''
 
-    p[0] = ast.Node(node_type='Const', children=[p[1]])
+    p[0] = ast.Node(node_type='Const', value=p[1])
+    # p[0] = ast.Node(node_type='Const', children=[p[1]])
 
 
 def p_RelationOp(p):
@@ -273,7 +276,7 @@ def p_RelationOp(p):
                     | LE
     '''
 
-    p[0] = ast.Node(node_type='RelationOp', children=[p[1]])
+    p[0] = ast.Node(node_type='RelationOp', value=p[1])
 
 
 # Operator precedence
@@ -287,13 +290,8 @@ precedence = (
 def p_empty(p):
     'empty :'
 
-    pass
-
 
 # Error rule for syntax errors
-# def p_error(p):
-#     print("Syntax error in input!")
-#     print(p)
 def p_error(p):
     if p == None:
         token = "end of file"
@@ -310,22 +308,3 @@ variable_list = {}
 parser = yacc.yacc(debug=True)
 
 #--------------------------------------------END---------------------------------------------#
-
-
-# INPUT_FILE = 'input_pascal/addition.pas'
-# with open('../' + INPUT_FILE) as f:
-#     data = f.read()
-#     prog = parser.parse(data)
-#     print(prog)
-
-# result = parser.parse(lx.INPUT_DATA)
-# print(result)
-# while True:
-#     try:
-#         s = input('input > ')
-#     except EOFError:
-#         break
-#     if not s:
-#         continue
-#     result = parser.parse(s)
-#     print(result)

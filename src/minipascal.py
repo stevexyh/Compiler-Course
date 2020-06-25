@@ -12,8 +12,8 @@
 * GitHub       : https://github.com/Steve-Xyh
 ---------------------------------------------
 * Notice
-- 
-- 
+-
+-
 ---------------------------------------------
 '''
 
@@ -42,6 +42,8 @@ with open('../' + INPUT_FILE) as f:
     data = f.read()
     prog = syntax.parser.parse(data)
     print(prog)
-    # prog.print_tree()
-    prog.dot.render()
+    # prog.traverse_depth(depth=0)
+    # res = prog.print_tree()
+    # print(res)
+    # prog.graphviz()
     # dfs_showdir(prog, 0)
