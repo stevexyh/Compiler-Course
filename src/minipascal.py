@@ -30,3 +30,6 @@ if __name__ == "__main__":
         prog = syntax.parser.parse(data)
         print(prog.print_tree())
         ast.draw_graph(prog)
+
+        quad = syntax.quadruple_list
+        print(quad)

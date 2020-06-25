@@ -30,18 +30,19 @@ class NodeCnt():
 class Node(NodeCnt):
     '''Def of AST node'''
 
-    def __init__(self, node_type: str = '', value=None, children: list = None):
+    def __init__(self, node_type: str = '', value=None, name='', children: list = None):
         self.node_type = node_type
-        # depth = depth
         self.value = value
+        self.name = name
         self.children = children if children else []
         self.idx = self.cnt
         NodeCnt.cnt += 1
 
     def __str__(self):
-        res = f'Type : {self.node_type}\n'
+        res = f'id   : {self.idx}\n'
+        res += f'Type : {self.node_type}\n'
+        res += f'Name: {self.name}\n' if self.name else ''
         res += f'Value: {self.value}\n' if self.value else ''
-        res += f'id   : {self.idx}'
 
         return str(res)
 

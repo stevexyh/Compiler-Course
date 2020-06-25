@@ -70,6 +70,7 @@
 
 import ply.yacc as yacc
 from lexical import tokens
+from codegen import quadruple
 from codegen import ast as ast
 
 
@@ -87,11 +88,11 @@ def p_SubProg(p):
     p[0] = ast.Node(node_type='SubProg', children=[p[1], p[2]])
 
 
-# FIXME(Steve X): store var into variable_list
+# FIXME(Steve X): store var into variable_list(符号表)
 def p_VarDef(p):
     '''VarDef : Var VarDefList ';' '''
 
-    p[0] = ast.Node(node_type='VarDef',  children=[p[2]])
+    p[0] = ast.Node(node_type='VarDef', children=[p[2]])
 
 
 def p_VarDefList(p):
@@ -100,15 +101,15 @@ def p_VarDefList(p):
     '''
 
     if len(p) == 2:
-        p[0] = ast.Node(node_type='VarDefList',  children=[p[1]])
+        p[0] = ast.Node(node_type='VarDefList', children=[p[1]])
     elif len(p) == 4:
-        p[0] = ast.Node(node_type='VarDefList',  children=[p[1], p[3]])
+        p[0] = ast.Node(node_type='VarDefList', children=[p[1], p[3]])
 
 
 def p_VarDefState(p):
     '''VarDefState : VarList ':' Type'''
 
-    p[0] = ast.Node(node_type='VarDefState',  children=[p[1], p[3]])
+    p[0] = ast.Node(node_type='VarDefState', children=[p[1], p[3]])
 
 
 def p_Type(p):
@@ -173,6 +174,7 @@ def p_AssignState(p):
     '''AssignState : Variable AssignOper Expr'''
 
     p[0] = ast.Node(node_type='AssignState', children=[p[1], p[3]])
+    p[1].value = p[3].value
 
 
 def p_ISE(p):
@@ -199,7 +201,6 @@ def p_Wh(p):
     p[0] = ast.Node(node_type='Wh', value=p[1])
 
 
-# FIXME(Steve X): Variable, Const 那里不知道对不对
 def p_Expr(p):
     '''Expr : Expr '+' Expr
             | Expr '-' Expr
@@ -214,15 +215,33 @@ def p_Expr(p):
     #   ^            ^          ^  ^
     #  p[0]         p[1]      p[2] p[3]
 
+    quad = None
+
     if len(p) == 2:
-        p[0] = ast.Node(node_type='Expr', children=[p[1]])
+        p[0] = ast.Node(node_type='Expr', value=p[1].value, children=[p[1]])
+        if p[1].node_type == 'Variable':
+            p[0].name = p[1].name
+            print(p[0].name, '***',p[0].value)
     elif len(p) == 4:
         if p[1] == '(':
-            p[0] = ast.Node(node_type='Expr', children=[p[2]])
+            p[0] = ast.Node(node_type='Expr', value=p[2].value, children=[p[2]])
         elif p[1] == '-':
-            p[0] = ast.Node(node_type='Expr', children=[p[2]])
+            quad = ('-', p[1], None, -p[1].value)
+            p[0] = ast.Node(node_type='Expr', value=quad[3], children=[p[2]])
         elif p[2] in '+-*/':
-            p[0] = ast.Node(node_type='Expr', children=[p[1], p[3]])
+            if p[2] == '+':
+                print(p[1].node_type, p[3].node_type)
+                quad = ('+', p[1], p[3], p[1].value + p[3].value)
+            elif p[2] == '-':
+                quad = ('-', p[1], p[3], p[1].value - p[3].value)
+            elif p[2] == '*':
+                quad = ('*', p[1], p[3], p[1].value * p[3].value)
+            elif p[2] == '/':
+                quad = ('/', p[1], p[3], p[1].value / p[3].value)
+            p[0] = ast.Node(node_type='Expr', value=quad[3], children=[p[1], p[3]])
+
+    if quad:
+        quadruple_list.add(quad)
 
 
 def p_BoolExpr(p):
@@ -232,30 +251,55 @@ def p_BoolExpr(p):
                 | '(' BoolExpr ')'
     '''
 
+    quad = None
+
     if len(p) == 2:
-        p[0] = ast.Node(node_type='BoolExpr', children=[p[1]])
+        p[0] = ast.Node(node_type='BoolExpr', value=p[1].value, children=[p[1]])
     elif len(p) == 3:
-        p[0] = ast.Node(node_type='BoolExpr', children=[p[2]])
+        quad = ('not', p[2], None, not p[2].value)
+        p[0] = ast.Node(node_type='BoolExpr', value=quad[3], children=[p[2]])
     elif len(p) == 4:
         if p[1] == '(':
-            p[0] = ast.Node(node_type='BoolExpr', children=[p[2]])
+            p[0] = ast.Node(node_type='BoolExpr', value=p[2].value, children=[p[2]])
         else:
-            p[0] = ast.Node(node_type='BoolExpr', children=[p[1], p[2], p[3]])
+            if p[2].value == '<':
+                quad = (p[2].value, p[1], p[3], p[1].value < p[3].value)
+            elif p[2].value == '>':
+                quad = (p[2].value, p[1], p[3], p[1].value > p[3].value)
+            elif p[2].value == '=':
+                quad = (p[2].value, p[1], p[3], p[1].value == p[3].value)
+            elif p[2].value == '>=':
+                quad = (p[2].value, p[1], p[3], p[1].value >= p[3].value)
+            elif p[2].value == '<>':
+                quad = (p[2].value, p[1], p[3], p[1].value != p[3].value)
+            elif p[2].value == '<=':
+                quad = (p[2].value, p[1], p[3], p[1].value <= p[3].value)
+
+            p[0] = ast.Node(node_type='BoolExpr', value=quad[3], children=[p[1], p[2], p[3]])
+
+    if quad:
+        quadruple_list.add(quad)
 
 
+# FIXME(Steve X): 关键字大小写匹配
 def p_BoolExpr_AndOr(p):
     '''BoolExpr_AndOr   : BoolExpr And BoolExpr
                         | BoolExpr Or BoolExpr
     '''
 
-    p[0] = ast.Node(node_type='BoolExpr_AndOr', children=[p[1], p[3]])
+    if p[2] == 'and':
+        quad = ('and', p[1], p[3], p[1].value and p[3].value)
+    elif p[2] == 'or':
+        quad = ('or', p[1], p[3], p[1].value or p[3].value)
+
+    p[0] = ast.Node(node_type='BoolExpr_AndOr', value=quad[3], children=[p[1], p[3]])
+    quadruple_list.add(quad)
 
 
 def p_Variable(p):
     '''Variable : Iden'''
 
-    p[0] = ast.Node(node_type='Variable', value=p[1])
-    # p[0] = ast.Node(node_type='Variable', children=[p[1]])
+    p[0] = ast.Node(node_type='Variable', value=0, name=p[1])
 
 
 def p_Const(p):
@@ -264,7 +308,6 @@ def p_Const(p):
     '''
 
     p[0] = ast.Node(node_type='Const', value=p[1])
-    # p[0] = ast.Node(node_type='Const', children=[p[1]])
 
 
 def p_RelationOp(p):
@@ -290,6 +333,8 @@ precedence = (
 def p_empty(p):
     'empty :'
 
+    p[0] = None
+
 
 # Error rule for syntax errors
 def p_error(p):
@@ -301,10 +346,14 @@ def p_error(p):
     print(f"Syntax error: Unexpected {token}")
 
 
-# Store the declared vars
-variable_list = {}
+print(tokens)
+
 
 # Build the parser
 parser = yacc.yacc(debug=True)
-
 #--------------------------------------------END---------------------------------------------#
+
+# Store the declared vars & quadruples
+# quadruple = (OP，arg1，arg2，result)
+variable_list = {}
+quadruple_list = quadruple.Quadruple()

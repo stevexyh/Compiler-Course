@@ -40,9 +40,9 @@ A minipascal parser implemented with Python-PLY
 - [x] TODO(Steve X): 识别 `MiniPascal` 语法要求
 - [x] TODO(Steve X): 输入 `MiniPascal` 源文件
 - [x] TODO(Steve X): 识别文法中的分隔符、算符等字符关键字(应该是 `yacc` 部分)
-- [x] TODO(Steve X): 输出程序中各种符号定义(符号表形式)
 - [x] TODO(Steve X): 输出抽象语法树, 通过 `Graphviz` 显示
-- [ ] TODO(Steve X): 输出程序的四元式
+- [x] TODO(Steve X): 输出程序的四元式
+- [ ] TODO(Steve X): 输出程序中各种符号定义(符号表形式)
 - [ ] TODO(Steve X): 简单的错误诊断(所在行, 变量不存在, 重复定义等)
 - [ ] TODO(Steve X): 对数组的支持
 
