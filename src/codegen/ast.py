@@ -80,7 +80,7 @@ class Node(NodeCnt):
 def draw_graph(root: Node):
     '''Visualize tree by Graphviz'''
 
-    tree = pgv.AGraph(strict=True, directed=True, name='AST')
+    tree = pgv.AGraph(strict=True, directed=False, name='AST')
 
     def print_node(node: Node):
         for i in range(len(node.children)):
