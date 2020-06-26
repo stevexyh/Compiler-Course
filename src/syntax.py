@@ -118,20 +118,52 @@ def p_VarDefState(p):
             print(f'Line {lexer.lineno}: Redefined var "{var.name}"')
             sys.exit(-1)
         else:
-            variable_list.add({
-                var.name: {
-                    'value': var.value,
-                    'var_type': p[3].value,
-                }
-            })
+            if p[3].node_type == 'ArrayType':
+                arr_begin = p[3].value[0]
+                arr_end = p[3].value[1]
+
+                variable_list.add({
+                    var.name: {
+                        'value': p[3].value,
+                        'var_type': 'Array',
+                        'var_items': [0 for i in range(arr_begin, arr_end)],
+                    }
+                })
+            else:
+                variable_list.add({
+                    var.name: {
+                        'value': var.value,
+                        'var_type': p[3].value,
+                    }
+                })
 
 
 def p_Type(p):
-    '''Type : Integer
-            | Real
+    '''Type : Type_Single
+            | ArrayType
+    '''
+
+    p[0] = ast.Node(node_type=p[1].node_type, value=p[1].value)
+
+
+def p_Type_Single(p):
+    '''Type_Single  : Integer
+                    | Real
     '''
 
     p[0] = ast.Node(node_type='Type', value=p[1])
+
+
+# XXX(Steve X): Pascal语法的数组下标和主流语言似乎不太一样, 如果需要的话再改吧
+def p_ArrayType(p):
+    '''ArrayType : ARRAY '[' IntNo '.' '.' IntNo ']' OF Type_Single'''
+    #  ^           ^      ^  ^      ^   ^  ^      ^  ^   ^
+    #  p[0]       p[1]  p[2]p[3]  p[4]p[5] p[6] p[7]p[8] p[9]
+
+    arr_begin = p[3]
+    arr_end = p[6] + 1
+
+    p[0] = ast.Node(node_type='ArrayType', value=(arr_begin, arr_end, p[9].value), children=[p[3], p[6], p[9]])
 
 
 # XXX(Steve X): 输出 AST 时, VarList 每一步元素都不变
@@ -141,8 +173,16 @@ def p_VarList(p):
     '''
 
     if len(p) == 2:
+        if p[1].node_type == 'Variable_Arr':
+            print('Invalid Syntax: Can not declare an array element')
+            sys.exit(-1)
+
         p[0] = ast.Node(node_type='VarList', value=[p[1]], children=[p[1]])
     elif len(p) == 4:
+        if p[3].node_type == 'Variable_Arr':
+            print('Invalid Syntax: Can not declare an array element')
+            sys.exit(-1)
+
         p[1].value.append(p[3])
         p[0] = ast.Node(node_type='VarList', value=p[1].value, children=[p[1], p[3]])
 
@@ -189,10 +229,12 @@ def p_CompState(p):
 def p_AssignState(p):
     '''AssignState : Variable AssignOper Expr'''
 
-    if variable_list.exist(p[1].name):
+    var_name = p[1].value[2] if p[1].node_type == 'Variable_Arr' else p[1].name
+
+    if variable_list.exist(var_name):
         p[0] = ast.Node(node_type='AssignState', children=[p[1], p[3]])
-        p[1].value = p[3].value
-        variable_list.update(var_name=p[1].name, value=p[1].value)
+        p[1].value = (p[3].value, p[1].value[1], p[1].value[2])
+        variable_list.update(var_name=var_name, arr_idx=p[1].value[1], value=p[1].value[0])
     else:
         print(f'Line {lexer.lineno}: Undefined var "{p[1].name}"')
         sys.exit(-1)
@@ -240,10 +282,13 @@ def p_Expr(p):
 
     if len(p) == 2:
         p[0] = ast.Node(node_type='Expr', value=p[1].value, children=[p[1]])
+        p[0].name = p[1].name
+
         if p[1].node_type == 'Variable':
-            p[0].name = p[1].name
             p[0].value = variable_list.search(var_name=p[0].name)['value']
-            print(p[0].name, '***', p[0].value)
+        elif p[1].node_type == 'Variable_Arr':
+            p[0].value = variable_list.search(var_name=p[1].name, arr_idx=p[1].value[1])
+
     elif len(p) == 4:
         if p[1] == '(':
             p[0] = ast.Node(node_type='Expr', value=p[2].value, children=[p[2]])
@@ -324,9 +369,18 @@ def p_BoolExpr_AndOr(p):
 
 
 def p_Variable(p):
-    '''Variable : Iden'''
+    '''Variable : Iden
+                | Iden '[' IntNo ']'
+    '''
 
-    p[0] = ast.Node(node_type='Variable', value=0, name=p[1])
+    # Variable      - value = (var_value, None, None)
+    # Variable_Arr  - value = (var_value, arr_idx, arr_name)
+
+    if len(p) == 2:
+        p[0] = ast.Node(node_type='Variable', value=(0, None, None), name=p[1])
+    elif len(p) == 5:
+        arr_val = variable_list.search(var_name=p[1], arr_idx=p[3])
+        p[0] = ast.Node(node_type='Variable_Arr', value=(arr_val, p[3], p[1]), name=f'{p[1]}[{3}]')
 
 
 def p_Const(p):

@@ -82,6 +82,9 @@ reserved = {
     # 左边到底是 real 还是 reald, 江信江疑🤔
     'real': 'Real',
     # 'Reald': 'Real',
+
+    'array': 'ARRAY',
+    'of': 'OF',
 }
 
 
@@ -97,7 +100,7 @@ tokens = [
 ] + list(reserved.values())
 
 # Literal Characters
-literals = "+-*/()<>=,;:."
+literals = "+-*/()<>[]=,;:."
 
 # Regular expression rules for simple tokens
 t_GE = r'>='

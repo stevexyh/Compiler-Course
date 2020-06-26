@@ -50,17 +50,28 @@ class VarTable(Table):
         Add single item to VarTab
 
         Parameters::
+
+        - for single var
             item: dict - a VarTab item {
                 '<var name(e.g. var_1)>' : {
                     'value' : 1,
                     'var_type' : 'integer',
                 }
             }
+
+        - for array
+            item: dict - a VarTab item {
+                '<array name(e.g. arr_1)>' : {
+                    'value': (arr_begin, arr_end, arr_type),
+                    'var_type': 'Array',    # DO NOT EDIT THIS VALUE
+                    'var_items': [],        # DO NOT EDIT THIS VALUE
+                }
+            }
         '''
 
         self.items.update(item)
 
-    def update(self, var_name: str = '', value=None):
+    def update(self, var_name: str = '', arr_idx: int = None, value=None):
         '''
         Update value for vars
 
@@ -69,13 +80,27 @@ class VarTable(Table):
             value: - value to be set
         '''
 
-        if self.exist(var_name):
-            self.items[var_name]['value'] = value
+        if arr_idx is None:
+            if self.exist(var_name):
+                self.items[var_name]['value'] = value
+            else:
+                print(f'Undefined var "{var_name}"')
+                sys.exit(-1)
         else:
-            print(f'Undefined var "{var_name}"')
-            sys.exit(-1)
+            if self.exist(var_name):
+                arr_begin = self.items[var_name]['value'][0]
+                arr_end = self.items[var_name]['value'][1]
 
-    def search(self, var_name: str = ''):
+                if arr_idx in range(arr_begin, arr_end):
+                    self.items[var_name]['var_items'][arr_idx] = value
+                else:
+                    print(f'Array index({arr_idx}) out of range({arr_begin},{arr_end})')
+                    sys.exit(-1)
+            else:
+                print(f'Undefined array "{var_name}"')
+                sys.exit(-1)
+
+    def search(self, var_name: str = '', arr_idx: int = None):
         '''
         Search value for vars
 
@@ -85,7 +110,17 @@ class VarTable(Table):
             var1
         '''
 
-        res = self.items.get(var_name)
+        if arr_idx is None:
+            res = self.items.get(var_name)
+        else:
+            arr_begin = self.items[var_name]['value'][0]
+            arr_end = self.items[var_name]['value'][1]
+
+            if arr_idx in range(arr_begin, arr_end):
+                res = self.items.get(var_name)['var_items'][arr_idx]
+            else:
+                print(f'Array index({arr_idx}) out of range({arr_begin},{arr_end})')
+                sys.exit(-1)
 
         return res
 
