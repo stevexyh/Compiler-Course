@@ -107,7 +107,6 @@ def p_VarDefList(p):
         p[0] = ast.Node(node_type='VarDefList', children=[p[1], p[3]])
 
 
-# FIXME(Steve X): 构造 AST 时调用已有变量会被认为是新节点
 def p_VarDefState(p):
     '''VarDefState : VarList ':' Type'''
 
@@ -185,6 +184,7 @@ def p_CompState(p):
     p[0] = ast.Node(node_type='CompState', children=[p[2]])
 
 
+# TODO(Steve X): 赋值结果更新到符号表
 def p_AssignState(p):
     '''AssignState : Variable AssignOper Expr'''
 
@@ -220,6 +220,8 @@ def p_Wh(p):
     p[0] = ast.Node(node_type='Wh', value=p[1])
 
 
+# FIXME(Steve X): 构造 AST 时调用已有变量会被认为是新节点
+# TODO(Steve X): 从符号表中读取变量值
 def p_Expr(p):
     '''Expr : Expr '+' Expr
             | Expr '-' Expr
