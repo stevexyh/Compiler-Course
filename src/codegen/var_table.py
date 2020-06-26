@@ -75,6 +75,20 @@ class VarTable(Table):
             print(f'Undefined var "{var_name}"')
             sys.exit(-1)
 
+    def search(self, var_name: str = ''):
+        '''
+        Search value for vars
+
+        Parameters::
+            var_name: str - name of the queried var
+        Returns::
+            var1
+        '''
+
+        res = self.items.get(var_name)
+
+        return res
+
     def exist(self, key: str = ''):
         '''
         Check if the var is already defined

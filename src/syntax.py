@@ -222,8 +222,6 @@ def p_Wh(p):
     p[0] = ast.Node(node_type='Wh', value=p[1])
 
 
-# FIXME(Steve X): 构造 AST 时调用已有变量会被认为是新节点
-# TODO(Steve X): 从符号表中读取变量值
 def p_Expr(p):
     '''Expr : Expr '+' Expr
             | Expr '-' Expr
@@ -244,6 +242,7 @@ def p_Expr(p):
         p[0] = ast.Node(node_type='Expr', value=p[1].value, children=[p[1]])
         if p[1].node_type == 'Variable':
             p[0].name = p[1].name
+            p[0].value = variable_list.search(var_name=p[0].name)['value']
             print(p[0].name, '***', p[0].value)
     elif len(p) == 4:
         if p[1] == '(':
