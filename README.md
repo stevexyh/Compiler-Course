@@ -3,22 +3,38 @@ Compiler lab project and demo
 A minipascal parser implemented with Python-PLY  
 
 ## Files  
-```  
-.
+```
 ├── README.md
+├── TODO_LIST.py
 ├── def
 │   ├── grammar_def.txt
 │   └── lexical_def.txt
 ├── input_pascal
+│   ├── addition.pas
 │   └── input.pas
+├── requirements.txt
 ├── src
 │   ├── README.md
-│   ├── format_string.py
-│   └── lexical.py
+│   ├── codegen
+│   │   ├── ast.py
+│   │   ├── quadruple.py
+│   │   ├── table.py
+│   │   └── var_table.py
+│   ├── graph
+│   │   ├── AST.pdf
+│   │   └── AST.png
+│   ├── lexical.py
+│   ├── minipascal.py
+│   ├── parser.out
+│   ├── parsetab.py
+│   ├── syntax.py
+│   └── tools
+│       ├── format_string.py
+│       └── gen_table.py
 └── test_demo
 
-8 directories, 15 files
-```  
+14 directories, 45 files
+```
 
 ## AST
 ![AST Graph Loading Err](src/graph/AST.png)
@@ -29,7 +45,10 @@ A minipascal parser implemented with Python-PLY
 - `Linux / macOS`
 
 ## Usage  
-- `To be finished.`  
+1. `cd src`
+2. `python3 minipascal.py`
+   or
+   `./minipascal.py`
 
 ## Installation  
 - `pip install -r requirements.txt`  

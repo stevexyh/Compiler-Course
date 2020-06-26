@@ -1,2 +1,5 @@
-colorama==0.4.3
-ply==3.11
+ply
+pygraphviz
+beeprint
+colorama
+rich
