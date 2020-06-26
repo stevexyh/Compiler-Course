@@ -68,6 +68,8 @@
 ---------------------------------------------
 '''
 
+
+import sys
 import ply.yacc as yacc
 from lexical import tokens
 from lexical import lexer
@@ -114,7 +116,7 @@ def p_VarDefState(p):
     for var in p[1].value:
         if variable_list.exist(var.name):
             print(f'Line {lexer.lineno}: Redefined var "{var.name}"')
-            exit(-1)
+            sys.exit(-1)
         else:
             variable_list.add({
                 var.name: {
@@ -184,16 +186,16 @@ def p_CompState(p):
     p[0] = ast.Node(node_type='CompState', children=[p[2]])
 
 
-# TODO(Steve X): 赋值结果更新到符号表
 def p_AssignState(p):
     '''AssignState : Variable AssignOper Expr'''
 
     if variable_list.exist(p[1].name):
         p[0] = ast.Node(node_type='AssignState', children=[p[1], p[3]])
         p[1].value = p[3].value
+        variable_list.update(var_name=p[1].name, value=p[1].value)
     else:
         print(f'Line {lexer.lineno}: Undefined var "{p[1].name}"')
-        exit(-1)
+        sys.exit(-1)
 
 
 def p_ISE(p):

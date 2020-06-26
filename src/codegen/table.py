@@ -21,7 +21,7 @@
 class Table():
     '''
     Def of general tables
-    
+
     Parameters::
         title: str - table title
         items: list - table data

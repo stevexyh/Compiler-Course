@@ -18,6 +18,7 @@
 '''
 
 
+import sys
 import beeprint
 from .table import Table
 
@@ -40,7 +41,7 @@ class VarTable(Table):
 
         return res
 
-    # TODO(Steve X): 符号表美化输出
+    # XXX(Steve X): 符号表美化输出
     def print_tab(self):
         '''Output items in a pretty table'''
 
@@ -58,6 +59,21 @@ class VarTable(Table):
         '''
 
         self.items.update(item)
+
+    def update(self, var_name: str = '', value=None):
+        '''
+        Update value for vars
+
+        Parameters::
+            var_name: str - name of the var to be updated
+            value: - value to be set
+        '''
+
+        if self.exist(var_name):
+            self.items[var_name]['value'] = value
+        else:
+            print(f'Undefined var "{var_name}"')
+            sys.exit(-1)
 
     def exist(self, key: str = ''):
         '''
