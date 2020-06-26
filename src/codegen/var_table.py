@@ -18,6 +18,7 @@
 '''
 
 
+import beeprint
 from .table import Table
 
 
@@ -27,11 +28,17 @@ class VarTable(Table):
 
     Parameters::
         title: str - table title
-        items: list - table data
+        items: dict - table data
     '''
 
-    def __init__(self, title: str = '', items: list = None):
-        Table.__init__(self, title=title, items=items)
+    def __init__(self, title: str = 'Var Table', items: list = None):
+        Table.__init__(self, title=title)
+        self.items = items if items else {}
+
+    def __str__(self):
+        res = beeprint.pp(self.__dict__, output=False)
+
+        return res
 
     # TODO(Steve X): 符号表美化输出
     def print_tab(self):
@@ -43,10 +50,25 @@ class VarTable(Table):
 
         Parameters::
             item: dict - a VarTab item {
-                'name' : 'var_1',
-                'value' : 1,
-                'var_type' : 'integer',
+                '<var name(e.g. var_1)>' : {
+                    'value' : 1,
+                    'var_type' : 'integer',
+                }
             }
         '''
 
-        Table.add(self, item=item)
+        self.items.update(item)
+
+    def exist(self, key: str = ''):
+        '''
+        Check if the var is already defined
+
+        Parameters::
+            key: str - var name
+        Returns::
+            res: bool - True for exist & False for not defined
+        '''
+
+        res = False if self.items.get(key) is None else True
+
+        return res

@@ -30,7 +30,7 @@ class Quadruple(Table):
         items: list - items in list should be a tuple(quadruple)
     '''
 
-    def __init__(self, title: str = '', items: list = None):
+    def __init__(self, title: str = 'Quadruples', items: list = None):
         Table.__init__(self, title=title, items=items)
 
     def __str__(self):

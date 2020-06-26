@@ -25,5 +25,5 @@
 # DONE(Steve X): 输出抽象语法树, 通过 Graphviz 显示
 # DONE(Steve X): 输出程序的四元式
 # DONE(Steve X): 输出程序中各种符号定义(符号表形式)
-# TODO(Steve X): 简单的错误诊断(所在行, 变量不存在, 重复定义等)
+# DONE(Steve X): 简单的错误诊断(所在行, 变量不存在, 重复定义等)
 # TODO(Steve X): 对数组的支持

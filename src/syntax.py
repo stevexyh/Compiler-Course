@@ -70,6 +70,7 @@
 
 import ply.yacc as yacc
 from lexical import tokens
+from lexical import lexer
 from codegen import ast
 from codegen import quadruple
 from codegen import var_table
@@ -112,11 +113,16 @@ def p_VarDefState(p):
 
     p[0] = ast.Node(node_type='VarDefState', children=[p[1], p[3]])
     for var in p[1].value:
-        variable_list.add({
-            'name': var.name,
-            'value': var.value,
-            'var_type': p[3].value,
-        })
+        if variable_list.exist(var.name):
+            print(f'Line {lexer.lineno}: Redefined var "{var.name}"')
+            exit(-1)
+        else:
+            variable_list.add({
+                var.name: {
+                    'value': var.value,
+                    'var_type': p[3].value,
+                }
+            })
 
 
 def p_Type(p):
@@ -182,8 +188,12 @@ def p_CompState(p):
 def p_AssignState(p):
     '''AssignState : Variable AssignOper Expr'''
 
-    p[0] = ast.Node(node_type='AssignState', children=[p[1], p[3]])
-    p[1].value = p[3].value
+    if variable_list.exist(p[1].name):
+        p[0] = ast.Node(node_type='AssignState', children=[p[1], p[3]])
+        p[1].value = p[3].value
+    else:
+        print(f'Line {lexer.lineno}: Undefined var "{p[1].name}"')
+        exit(-1)
 
 
 def p_ISE(p):
