@@ -51,7 +51,6 @@ INPUT_FILE = 'input_pascal/addition.pas'
 TABLE_LEN = 80
 
 #---------------------------------Preset vars for PLY module---------------------------------#
-# XXX(Steve X): 关键字大小写忽略
 reserved = {
     'program': 'Program',
     # 'Program': 'Program',
@@ -79,7 +78,9 @@ reserved = {
     # 'Or': 'Or',
     'integer': 'Integer',
     # 'Integer': 'Integer',
-    'reald': 'Real',
+
+    # 左边到底是 real 还是 reald, 江信江疑🤔
+    'real': 'Real',
     # 'Reald': 'Real',
 }
 
@@ -208,7 +209,7 @@ def read_data(file_name: str = INPUT_FILE):
 
     data = ''
     with open(file=file_name, mode='r') as input_file:
-        data = input_file.read()
+        data = input_file.read().lower()
 
     return data
 

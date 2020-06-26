@@ -26,7 +26,7 @@ if __name__ == "__main__":
     lexical.lexer.lineno = 1
     INPUT_FILE = 'input_pascal/addition.pas'
     with open('../' + INPUT_FILE) as f:
-        data = f.read()
+        data = f.read().lower()
         prog = syntax.parser.parse(data)
         print(prog.print_tree())
         ast.draw_graph(prog)
