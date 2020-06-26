@@ -21,7 +21,7 @@ A minipascal parser implemented with Python-PLY
 ```  
 
 ## AST
-![AST](src/graph/AST.png)
+![AST Graph Loading Err](src/graph/AST.png)
 
 
 ## Environment
