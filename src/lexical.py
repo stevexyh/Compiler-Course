@@ -51,6 +51,7 @@ INPUT_FILE = 'input_pascal/addition.pas'
 TABLE_LEN = 80
 
 #---------------------------------Preset vars for PLY module---------------------------------#
+# XXX(Steve X): 关键字大小写忽略
 reserved = {
     'program': 'Program',
     # 'Program': 'Program',
@@ -145,6 +146,7 @@ def t_IntNo(t):
 # Define a rule so we can track line numbers
 def t_newline(t):
     r'\n'
+
     t.lexer.lineno += 1
 
 
@@ -155,6 +157,7 @@ def t_error(t):
     Parameters::
         t:LexToken - a token instance
     '''
+
     err_token = t.value.split()[0]
     column = find_column(input_str=INPUT_DATA, token=t)
     err_line = INPUT_DATA.splitlines()[t.lineno - 1]
@@ -187,6 +190,7 @@ def find_column(input_str: str, token: lex.LexToken):
     Returns::
         column: int - the column number of the token
     '''
+
     line_start = input_str.rfind('\n', 0, token.lexpos) + 1
     column = (token.lexpos - line_start) + 1
     return column
@@ -201,6 +205,7 @@ def read_data(file_name: str = INPUT_FILE):
     Returns::
         data: str - data read from the file
     '''
+
     data = ''
     with open(file=file_name, mode='r') as input_file:
         data = input_file.read()
@@ -218,6 +223,7 @@ def buile_lines(data: str = ''):
     Returns::
         lines: list - a sorted list of tokens
     '''
+
     lexer.input(data)
 
     line_no = 0
@@ -242,10 +248,6 @@ def output_table():
     '''
     Output the token table
 
-    Parameters::
-        null
-    Returns::
-        null
     '''
 
     header = [

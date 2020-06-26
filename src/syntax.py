@@ -249,7 +249,9 @@ def p_Expr(p):
             p[0] = ast.Node(node_type='Expr', value=p[2].value, children=[p[2]])
         elif p[1] == '-':
             quad = ('-', p[1], None, -p[1].value)
-            p[0] = ast.Node(node_type='Expr', value=quad[3], children=[p[2]])
+
+            p[1] = ast.Node(node_type='UnaryOp', value=p[1])
+            p[0] = ast.Node(node_type='Expr', value=quad[3], children=[p[1], p[2]])
         elif p[2] in '+-*/':
             if p[2] == '+':
                 print(p[1].node_type, p[3].node_type)
@@ -260,7 +262,9 @@ def p_Expr(p):
                 quad = ('*', p[1], p[3], p[1].value * p[3].value)
             elif p[2] == '/':
                 quad = ('/', p[1], p[3], p[1].value / p[3].value)
-            p[0] = ast.Node(node_type='Expr', value=quad[3], children=[p[1], p[3]])
+
+            p[2] = ast.Node(node_type='BinOp', value=p[2])
+            p[0] = ast.Node(node_type='Expr', value=quad[3], children=[p[1], p[2], p[3]])
 
     if quad:
         quadruple_list.add(quad)
@@ -279,7 +283,8 @@ def p_BoolExpr(p):
         p[0] = ast.Node(node_type='BoolExpr', value=p[1].value, children=[p[1]])
     elif len(p) == 3:
         quad = ('not', p[2], None, not p[2].value)
-        p[0] = ast.Node(node_type='BoolExpr', value=quad[3], children=[p[2]])
+        p[1] = ast.Node(node_type='UnaryOp', value=p[1])
+        p[0] = ast.Node(node_type='BoolExpr', value=quad[3], children=[p[1], p[2]])
     elif len(p) == 4:
         if p[1] == '(':
             p[0] = ast.Node(node_type='BoolExpr', value=p[2].value, children=[p[2]])
@@ -303,7 +308,6 @@ def p_BoolExpr(p):
         quadruple_list.add(quad)
 
 
-# XXX(Steve X): 关键字大小写匹配
 def p_BoolExpr_AndOr(p):
     '''BoolExpr_AndOr   : BoolExpr And BoolExpr
                         | BoolExpr Or BoolExpr
@@ -314,7 +318,8 @@ def p_BoolExpr_AndOr(p):
     elif p[2] == 'or':
         quad = ('or', p[1], p[3], p[1].value or p[3].value)
 
-    p[0] = ast.Node(node_type='BoolExpr_AndOr', value=quad[3], children=[p[1], p[3]])
+    p[2] = ast.Node(node_type='RelationOp', value=p[2])
+    p[0] = ast.Node(node_type='BoolExpr_AndOr', value=quad[3], children=[p[1], p[2], p[3]])
     quadruple_list.add(quad)
 
 
