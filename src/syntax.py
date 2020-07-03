@@ -155,6 +155,7 @@ def p_Type_Single(p):
     p[0] = ast.Node(node_type='Type', value=p[1])
 
 
+# XXX(Steve X): 二维数组还不支持, 等一会再改吧, 一维的又不是不能用
 # XXX(Steve X): Pascal语法的数组下标和主流语言似乎不太一样, 如果需要的话再改吧
 def p_ArrayType(p):
     '''ArrayType : ARRAY '[' IntNo '.' '.' IntNo ']' OF Type_Single'''
