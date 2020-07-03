@@ -71,6 +71,7 @@
 
 import sys
 import ply.yacc as yacc
+import tools.format_string as fs
 from lexical import tokens
 from lexical import lexer
 from codegen import ast
@@ -424,7 +425,9 @@ def p_error(p):
     else:
         token = f"{p.type}({p.value}) on line {p.lineno}"
 
-    print(f"Syntax error: Unexpected {token}")
+    err_info = fs.set_color(string=f'Syntax error: Unexpected {token}', color='redBack')
+    print(err_info)
+    sys.exit(-1)
 
 
 print(tokens)
