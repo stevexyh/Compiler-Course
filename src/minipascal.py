@@ -25,12 +25,13 @@ from codegen import ast
 
 if __name__ == "__main__":
     lexical.lexer.lineno = 1
-    INPUT_FILE = 'input_pascal/addition.pas'
+    INPUT_FILE = '../input_pascal/addition.pas'
 
     if len(sys.argv) == 2:
         INPUT_FILE = sys.argv[1]
+        lexical.INPUT_FILE = INPUT_FILE
 
-    with open('../' + INPUT_FILE) as f:
+    with open(INPUT_FILE) as f:
         data = f.read().lower()
         prog = syntax.parser.parse(data)
         print(prog.print_tree())

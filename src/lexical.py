@@ -43,11 +43,14 @@
 '''
 
 
+import sys
 import ply.lex as lex
 import tools.format_string as fs
 import tools.gen_table as gt
+# if len(sys.argv) == 2:
+INPUT_FILE = sys.argv[1]
 
-INPUT_FILE = 'input_pascal/addition.pas'
+# INPUT_FILE = 'input_pascal/addition.pas'
 TABLE_LEN = 80
 
 #---------------------------------Preset vars for PLY module---------------------------------#
@@ -270,7 +273,7 @@ def output_table():
 
 # if __name__ == "__main__":
 
-INPUT_DATA = read_data(file_name='../' + INPUT_FILE)
+INPUT_DATA = read_data(file_name=INPUT_FILE)
 LINE_LIST = buile_lines(data=INPUT_DATA)
 # for l in LINE_LIST:
 #     print(l)
