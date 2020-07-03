@@ -8,7 +8,7 @@ begin
 		Y:=1
 	Else 
 		If x>5 Then y:=0
-		Else y:=-1
+		Else y:=1
 		
 
 end. 

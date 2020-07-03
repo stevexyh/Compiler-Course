@@ -43,6 +43,9 @@
 '''
 
 
+# XXX(Steve X): 负数还不支持, 当时给的文法词法里也没说要负数啊hhhh, 只说要无符号数
+
+
 import sys
 import ply.lex as lex
 import tools.format_string as fs

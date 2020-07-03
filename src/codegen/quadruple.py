@@ -37,7 +37,11 @@ class Quadruple(Table):
         res = ''
         for quad in self.items:
             qd_1 = quad[1].name if quad[1].name else quad[1].value
-            qd_2 = quad[2].name if quad[2].name else quad[2].value
+
+            if quad[2]:
+                qd_2 = quad[2].name if quad[2].name else quad[2].value
+            else:
+                qd_2 = ''
             res += str((quad[0], qd_1, qd_2, quad[3])) + '\n'
 
         return res
