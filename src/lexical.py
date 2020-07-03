@@ -50,11 +50,13 @@ import sys
 import ply.lex as lex
 import tools.format_string as fs
 import tools.gen_table as gt
-# if len(sys.argv) == 2:
-INPUT_FILE = sys.argv[1]
 
-# INPUT_FILE = 'input_pascal/addition.pas'
+
 TABLE_LEN = 80
+INPUT_FILE = '../input_pascal/addition.pas'
+
+if len(sys.argv) == 2:
+    INPUT_FILE = sys.argv[1]
 
 #---------------------------------Preset vars for PLY module---------------------------------#
 reserved = {
