@@ -185,8 +185,12 @@ def p_VarList(p):
             print('Invalid Syntax: Can not declare an array element')
             sys.exit(-1)
 
-        p[1].value.append(p[3])
-        p[0] = ast.Node(node_type='VarList', value=p[1].value, children=[p[1], p[3]])
+        if variable_list.exist(p[3].name):
+            print(f'Line {lexer.lineno}: Redefined var "{p[3].name}"')
+            sys.exit(-1)
+        else:
+            p[1].value.append(p[3])
+            p[0] = ast.Node(node_type='VarList', value=p[1].value, children=[p[1], p[3]])
 
 
 def p_StateList(p):
