@@ -3,3 +3,8 @@
 **/parser.out
 **/parsetab.py
 **/*.pdf
+**/*.doc
+**/*.docx
+**/*.xls
+**/*.xlsx
+**/*.private.*

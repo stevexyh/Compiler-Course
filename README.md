@@ -1,6 +1,6 @@
 # Compiler-Course  
-Compiler lab project and demo  
-A minipascal parser implemented with Python-PLY  
+> Compiler lab project and demo  
+> A minipascal parser implemented with Python-PLY  
 
 ## Files  
 ```
@@ -65,6 +65,5 @@ A minipascal parser implemented with Python-PLY
 - [x] TODO(Steve X): 简单的错误诊断(所在行, 变量不存在, 重复定义等)
 - [x] TODO(Steve X): 对数组的支持
 
-
----  
+---
 **by [Steve X](https://github.com/Steve-Xyh)**  
