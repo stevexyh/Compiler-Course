@@ -42,7 +42,6 @@ class VarTable(Table):
 
         return res
 
-    # XXX(Steve X): 符号表美化输出
     def print_tab(self):
         '''Output items in a pretty table'''
         header = [
