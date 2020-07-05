@@ -42,3 +42,4 @@ if __name__ == "__main__":
 
         var = syntax.variable_list
         print(var)
+        var.print_tab()

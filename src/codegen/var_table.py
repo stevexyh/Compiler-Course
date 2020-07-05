@@ -21,6 +21,7 @@
 import sys
 import beeprint
 from .table import Table
+from tools import gen_table as gt
 
 
 class VarTable(Table):
@@ -44,6 +45,23 @@ class VarTable(Table):
     # XXX(Steve X): 符号表美化输出
     def print_tab(self):
         '''Output items in a pretty table'''
+        header = [
+            {'header': 'Name', 'justify': 'center', 'style': 'green'},
+            {'header': 'Type', 'style': 'cyan'},
+            {'header': 'Value', 'style': 'red'},
+        ]
+
+        data = []
+
+        for item in self.items:
+            name = item
+            var_type = self.items[item]['var_type']
+            value = str(self.items[item]['var_items']) if var_type == 'Array' else str(self.items[item]['value'])
+            value = value.replace('[', '').replace(']', '')
+
+            data.append((name, var_type, value))
+
+        gt.print_table(header_list=header, data_list=data)
 
     def add(self, item: dict = None):
         '''
