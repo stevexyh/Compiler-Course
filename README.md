@@ -4,6 +4,7 @@
 
 ## Files  
 ```
+.
 ├── README.md
 ├── TODO_LIST.py
 ├── def
@@ -45,10 +46,14 @@
 - `Linux / macOS`
 
 ## Usage  
-1. `cd src`
-2. `python3 minipascal.py`
-   or
-   `./minipascal.py`
+1. Change to the src directory
+   - `cd src`
+2. Run
+   - Run default test case
+      - `python3 minipascal.py` or `./minipascal.py`
+   - Run customize test cases
+      - `python3 minipascal.py <file name>` or `./minipascal.py <file name>`
+      - e.g. `./minipascal.py ../input_pascal/1-bool.pas`
 
 ## Installation  
 - `pip install -r requirements.txt`  
